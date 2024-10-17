@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+    <changeSet id="001-1" author="szymon-kw">
+        <createTable tableName="report">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(500)">
+            <constraints nullable="false"/> </column>
+            <column name="date_added" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="due_date" type="timestamp">
+            <constraints nullable="false" />
+            </column>
+            <column name="category" type="VARCHAR(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="image" type="varchar(250)"/>
+            <column name="reporting_user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="report"
+                baseColumnNames="reporting_user_id"
+                constraintName="fk_report_user"
+                referencedTableName="users"
+                referencedColumnNames="id" />
+    </changeSet>
+</databaseChangeLog>

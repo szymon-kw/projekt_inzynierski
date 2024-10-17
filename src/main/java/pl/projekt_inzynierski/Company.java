@@ -11,9 +11,9 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int criticalResponseTime; // czas na obsłużenie zgłoszenia kategorii CRITIAL (krytyczne)
-    private int majorResponseTime; // czas na obsłużenie zgłoszenia kategorii MAJOR (poważne)
-    private int minorResponseTime; // czas na obsłużenie zgoszenia kategorii MINOR (drobne)
+    private int criticalResponseTime; // czas na obsłużenie zgłoszenia kategorii CRITIAL (krytyczne) - w godzinach
+    private int majorResponseTime; // czas na obsłużenie zgłoszenia kategorii MAJOR (poważne) - w godzinach
+    private int minorResponseTime; // czas na obsłużenie zgoszenia kategorii MINOR (drobne) - w godzinach
     @OneToMany(mappedBy = "company")
     private List<User> users;
 

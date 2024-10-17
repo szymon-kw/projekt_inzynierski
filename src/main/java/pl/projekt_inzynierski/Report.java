@@ -14,7 +14,9 @@ public class Report {
     private String description;
     private LocalDateTime dateAdded;
     private LocalDateTime dueDate;
+    @Enumerated(EnumType.STRING)
     private ReportCategory category;
+    @Enumerated(EnumType.STRING)
     private ReportStatus status;
     private String image;
     @ManyToOne

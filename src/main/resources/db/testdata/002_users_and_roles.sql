@@ -9,7 +9,8 @@ INSERT INTO users (first_name, last_name, email, password, company_id) VALUES
 
 INSERT INTO user_role (name, description) VALUES
     ('USER', 'Zwykły użytkownik z podstawowymi uprawnieniami'),
-    ('ADMINISTRATOR', 'Użytkownik z uprawnieniami administracyjnymi, pełny dostęp do wszystkich funkcji i ustawień');
+    ('ADMINISTRATOR', 'Użytkownik z uprawnieniami administracyjnymi, pełny dostęp do wszystkich funkcji i ustawień'),
+    ('HANDLER', 'Użytkownik odpowiedzialny za obsługę zgłoszonych błędów (przypisanych przez administratora)');
 
 INSERT INTO
     user_roles (user_id, role_id)
@@ -18,4 +19,4 @@ VALUES
     (2, 1),
     (3, 2),
     (4,1),
-    (5,1);
+    (5,3);

@@ -1,0 +1,229 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #333333;
+    color: white;
+    font-family: "Lato",sans-serif;
+    font-weight: 400;
+}
+
+.container {
+    margin: 0 auto;
+    width: 100%;
+}
+
+nav {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #191919;
+}
+
+nav .nav-item {
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 0 25px;
+    margin-right: 30px;
+}
+
+nav .nav-item-logo {
+   margin: 0 auto 0 100px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-box {
+    margin: 110px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-buttons-box button {
+    margin-top: 10px;
+    padding: 5px;
+}
+
+.latest-reports-box, .nearing-deadline-reports-box, .unassigned-reports-box, .user-listing-box, .company-listing-box {
+    margin-bottom: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-title, .latest-reports-header, .report-stats-header, .nearing-deadline-reports-header,
+.unassigned-reports-header{
+    margin-bottom: 25px;
+}
+
+.latest-reports-table th,tr,td, .company-listing-table th,tr,td, .user-listing-table th,tr,td {
+    border: 1px solid white;
+    padding: 8px;
+}
+
+.view-all-reports-btn {
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.report-stats-box {
+    margin-bottom: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.report-stats-items-box {
+    margin-top: 40px;
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.report-stats-item-box p {
+    padding-bottom: 12px;
+}
+
+.nearing-deadline-reports-box, .user-listing-box, .company-listing-box {
+    margin-top: 100px;
+}
+
+.report-stats-item-header {
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+.list-heading {
+    margin: 80px 0 60px 0;
+    font-size: 35px;
+}
+
+.list-border {
+    margin-bottom: 120px;
+    list-style: none;
+}
+
+.list-border > li {
+    font-size: 24px;
+    border: 1px #6d6d6d solid;
+    padding: 16px 40px 16px 40px;
+    text-align: center;
+}
+
+.list-border > li > a {
+    text-decoration: none;
+    color: white;
+}
+
+.report-filter-section {
+    margin-top: 80px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.report-filter-box > button, .user-filter-box > button {
+    padding: 5px;
+}
+
+.report-filter-box > p {
+    margin-bottom: 5px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form .form-submit-btn {
+    margin-top: 35px;
+    border-radius: 8px;
+}
+
+.form > * , .form button{
+    margin-top: 8px
+}
+
+.form > input, .form > button, .form > select {
+    font-size: 15px;
+    padding: 5px;
+}
+
+.report-form-box {
+    margin: 100px 0 100px 0;
+
+}
+
+.report-form-box > h3 {
+    font-size: 25px;
+    margin-bottom: 45px;
+}
+
+.form-margin {
+    margin-bottom: 150px;
+}
+
+.homepage-redirect {
+    margin: 0 auto;
+}
+
+.not-found-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.not-found-box > a {
+    text-decoration: none;
+    color: bisque;
+    font-size: 20px;
+}
+
+.not-found-box > a:hover {
+    transition-duration: .7s;
+    font-size: 21px;
+}
+
+.user-filter-box {
+    margin-top: 80px;
+    font-size: 18px;
+}
+
+.user-listing-header, .company-listing-header {
+    margin-bottom: 70px;
+}
+
+.company-listing-table {
+    width: 65%;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;;
+    height: 200px;
+    background-color: #191919;
+}

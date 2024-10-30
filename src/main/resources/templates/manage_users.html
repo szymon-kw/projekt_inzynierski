@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzanie Użytkownikami</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+        form, table {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<h1>Zarządzanie Użytkownikami</h1>
+
+<h2>Dodaj Użytkownika</h2>
+<form th:action="@{/add_user}" method="post">
+    <label for="firstName">Imię:</label>
+    <input type="text" id="firstName" name="firstName" required>
+
+    <label for="lastName">Nazwisko:</label>
+    <input type="text" id="lastName" name="lastName" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Hasło:</label>
+    <input type="password" id="password" name="password" required>
+
+    <label for="companyId">Firma:</label>
+    <select id="companyId" name="companyId" required>
+        <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}">
+        </option>
+    </select>
+
+    <label for="roleId">Rola:</label>
+    <select id="roleId" name="roleId" required>
+        <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}">
+        </option>
+    </select>
+
+    <button type="submit">Dodaj Użytkownika</button>
+</form>
+
+<h2>Lista Użytkowników</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Email</th>
+        <th>Firma</th>
+        <th>Rola</th>
+        <th>Nowe Hasło</th>
+        <th>Akcje</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <form th:action="@{/edit_user/{id}(id=${user.id})}" method="post">
+            <td><input type="text" name="firstName" th:value="${user.firstName}" /></td>
+            <td><input type="text" name="lastName" th:value="${user.lastName}" /></td>
+            <td><input type="email" name="email" th:value="${user.email}" /></td>
+            <td>
+                <select name="companyId">
+                    <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}" th:selected="${company.id == user.company.id}">
+                    </option>
+                </select>
+            </td>
+            <td>
+                <select name="roleId">
+                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${user.roles.contains(role)}">
+                    </option>
+                </select>
+            </td>
+            <td><input type="password" name="newPassword" placeholder="Nowe hasło" /></td>
+            <td>
+                <button type="submit">Zatwierdź</button>
+            </td>
+        </form>
+        <td>
+            <!-- Formularz do usuwania poza głównym formularzem -->
+            <form th:action="@{/delete_user/{id}(id=${user.id})}" method="post" style="display:inline;">
+                <button type="submit" class="delete-button">Usuń</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

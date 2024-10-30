@@ -1,5 +1,5 @@
 INSERT INTO users (first_name, last_name, email, password, company_id) VALUES
- ('Jan', 'Kowalski', 'jan.kowalski@example.com', 'password123', 1),
+ ('Jan', 'Kowalski', 'jan.kowalski@example.com', '$2a$10$euvp4u0F.oU/1f5pZJdjoOiTOtk3YevVo9Hd8Tmv9l8xUO0UuJ1QK', 1),
  ('Anna', 'Nowak', 'anna.nowak@example.com', 'qwerty1234', 2),
  ('Piotr', 'Wiśniewski', 'admin@example.com', 'strongPass789', 3),  /*ADMIN*/
  ('Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', 'safePass456', 4),

@@ -36,11 +36,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/login", "/static/**", "/js/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/administrator_panel/**").hasRole("ADMINISTRATOR")
                         .requestMatchers("/delete_user/**").hasRole("ADMINISTRATOR")
-                        .requestMatchers("/user_panel/**").hasRole("USER")
+                        .requestMatchers("/home/**").authenticated()
                         .requestMatchers("/employee_panel/**").hasRole("EMPLOYEE")
                         .requestMatchers("/default").authenticated()
                         .anyRequest().authenticated()

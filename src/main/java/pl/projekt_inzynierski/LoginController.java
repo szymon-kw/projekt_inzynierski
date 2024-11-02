@@ -20,15 +20,16 @@ public class LoginController {
     }
 
     @GetMapping("/default")
-    public String defaultAfterLogin(Authentication authentication) {
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMINISTRATOR"))) {
-            return "redirect:/administrator_panel";
-        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
-            return "redirect:/user_panel";
-        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
-            return "redirect:/employee_panel";
-        }
+    public String defaultAfterLogin() {
+//    public String defaultAfterLogin(Authentication authentication) {
+//        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMINISTRATOR"))) {
+//            return "redirect:/administrator_panel";
+//        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+//            return "redirect:/user_panel";
+//        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
+//            return "redirect:/employee_panel";
+//        }
 
-        return "redirect:/login?error";
+        return "redirect:/home";
     }
 }

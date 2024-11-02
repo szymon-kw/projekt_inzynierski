@@ -1,9 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+                xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Panel Użytkownika</title>
+    <meta charset="UTF-8">
+    <title>Strona główna</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
+    700;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-<h1>Witaj w panelu użytkownika!</h1>
+<div class="container">
+    <nav>
+        <a href="/logout" class="nav-item">Wyloguj się</a>
+    </nav>
+
+    <main class="main-content">
+        <h2 th:text="| Witaj ${#authentication.name}|" class="list-heading">Witaj Tomasz</h2>
+        <ul class="list-border">
+            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#">Zarządzaj Użytkownikami</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#">Panel Zgłoszeń</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#">Raporty</a></li>
+            <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#">Zgłoszenia</a></li>
+            <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#">Twoje Raporty</a></li>
+            <li sec:authorize="hasRole('ROLE_USER')"><a href="#">Twoje Zgłoszenia</a></li>
+            <li sec:authorize="hasRole('ROLE_USER')"><a href="#">Nowe Zgłoszenie</a></li>
+            <li><a href="#">Profil</a></li>
+        </ul>
+    </main>
+
+    <footer style="height: 300px">
+        Stopka
+    </footer>
+</div>
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Lista zgłoszeń</title>
@@ -9,28 +9,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
     700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles/main.css">
+    <link rel="stylesheet" href="../static/styles/main.css" th:href="@{/styles/main.css}">
 
 </head>
 <body>
 
 <div class="container">
     <nav>
-        <a href="" class="nav-item nav-item-logo">Strona główna</a>
-        <a href="" class="nav-item">Lista zgłoszeń</a>
-        <a href="" class="nav-item">Ustawienia konta</a>
-        <a href="" class="nav-item">Wyloguj się</a>
+
+        <a href="" th:href="@{/home}" class="nav-item">Powrót do panelu</a>
+        <a href="" th:href="@{/logout}" class="nav-item">Wyloguj się</a>
     </nav>
 
     <main class="main-content">
-        <div class="report-filter-section">
-            <div class="report-filter-box">
-                <p>Filtrowanie według kategorii</p>
-                <button>Krytyczne</button>
-                <button>Poważne</button>
-                <button>Drobne</button>
-            </div>
-        </div>
+
+<!--        <div class="report-filter-section">-->
+<!--            <div class="report-filter-box">-->
+<!--                <p>Filtrowanie według statusu</p>-->
+<!--                <button>Oczekujące</button>-->
+<!--                <button>W trakcie przeglądu</button>-->
+<!--                <button>Zakończone</button>-->
+<!--            </div>-->
+
+<!--            <div class="report-filter-box">-->
+<!--                <p>Filtrowanie według kategorii</p>-->
+<!--                <button>Krytyczne</button>-->
+<!--                <button>Poważne</button>-->
+<!--                <button>Drobne</button>-->
+<!--            </div>-->
+<!--        </div>-->
 
 
 
@@ -40,20 +47,24 @@
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>Tytuł</th>
                     <th>Data dodania</th>
                     <th>Pozostały czas</th>
                     <th>Kategoria</th>
                     <th>Status</th>
+                    <th>Przypisany pracownik</th>
                     <th>Szczegóły</th></tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>19.10.2024 20:50</td>
-                    <td>35min</td>
-                    <td>Poważne</td>
-                    <td>W trakcie przeglądu</td>
-                    <td><button>Sprawdź</button></td>
+                <tbody th:remove="all-but-first">
+                <tr th:each="report, status: ${reports}">
+                    <td th:text="${status.count}">1</td>
+                    <td th:text="${report.title}">Niedziałająca strona logowania</td>
+                    <td th:text="${report.dateAdded}">19.10.2024 20:50</td>
+                    <td th:text="|${report.remainingTime.getDays()} dni ${report.remainingTime.getHours()} godz. ${report.remainingTime.getMinutes()} min.|" >x dni x godzin x minut</td>
+                    <td th:text="${report.category.description}">Poważne</td>
+                    <td th:text="${report.status.description}">W trakcie przeglądu</td>
+                    <td th:text="${report.assignedUser != null ? report.assignedUser.email : 'Brak'}">jankowalski9</td>
+                    <td><a th:href="@{/chat(reportId=${report.id})}">Sprawdź</a></td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -61,6 +72,7 @@
                     <td>35min</td>
                     <td>Poważne</td>
                     <td>W trakcie przeglądu</td>
+                    <td>jankowalski9</td>
                     <td><button>Sprawdź</button></td>
                 </tr>
                 <tr>
@@ -69,6 +81,7 @@
                     <td>35min</td>
                     <td>Poważne</td>
                     <td>W trakcie przeglądu</td>
+                    <td>jankowalski9</td>
                     <td><button>Sprawdź</button></td>
                 </tr>
                 <tr>
@@ -77,11 +90,13 @@
                     <td>35min</td>
                     <td>Poważne</td>
                     <td>W trakcie przeglądu</td>
+                    <td>jankowalski9</td>
                     <td><button>Sprawdź</button></td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
 
     </main>
 

@@ -1,4 +1,4 @@
-package pl.projekt_inzynierski;
+package pl.projekt_inzynierski.report;
 
 public enum ReportCategory {
 
@@ -6,7 +6,7 @@ public enum ReportCategory {
     MAJOR("Poważne"),
     MINOR("Drobne");
 
-    final String description;
+    public final String description;
 
     ReportCategory(String description) {
         this.description = description;

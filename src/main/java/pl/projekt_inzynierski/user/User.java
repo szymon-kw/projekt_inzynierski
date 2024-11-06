@@ -1,6 +1,7 @@
-package pl.projekt_inzynierski;
+package pl.projekt_inzynierski.user;
 
 import jakarta.persistence.*;
+import pl.projekt_inzynierski.company.Company;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -79,5 +80,11 @@ public class User {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public boolean hasRole(String role) {
+        return roles != null && roles.stream()
+                .map(UserRole::getName)
+                .anyMatch(roleString -> roleString.equals(role));
     }
 }

@@ -1,4 +1,4 @@
-package pl.projekt_inzynierski;
+package pl.projekt_inzynierski.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

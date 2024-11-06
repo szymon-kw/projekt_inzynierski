@@ -1,6 +1,7 @@
-package pl.projekt_inzynierski;
+package pl.projekt_inzynierski.company;
 
 import jakarta.persistence.*;
+import pl.projekt_inzynierski.user.User;
 
 import java.util.List;
 

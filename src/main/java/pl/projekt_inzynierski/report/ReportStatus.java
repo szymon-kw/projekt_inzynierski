@@ -1,4 +1,4 @@
-package pl.projekt_inzynierski;
+package pl.projekt_inzynierski.report;
 
 public enum ReportStatus {
 
@@ -6,7 +6,7 @@ public enum ReportStatus {
     UNDER_REVIEW("W trakcie przeglądu"),
     COMPLETED("Zakończone");
 
-    final String description;
+    public final String description;
 
     ReportStatus(String description) {
         this.description = description;

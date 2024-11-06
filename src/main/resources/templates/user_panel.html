@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
     700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main.css" th:href="@{/styles/main.css}">
 </head>
 <body>
 <div class="container">
@@ -22,11 +22,11 @@
         <h2 th:text="| Witaj ${#authentication.name}|" class="list-heading">Witaj Tomasz</h2>
         <ul class="list-border">
             <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="/admin/manage_users">Zarządzaj Użytkownikami</a></li>
-            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#">Panel Zgłoszeń</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#" th:href="@{/reports}">Panel Zgłoszeń</a></li>
             <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#">Raporty</a></li>
-            <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#">Zgłoszenia</a></li>
+            <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#" th:href="@{/reports}">Zgłoszenia</a></li>
             <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#">Twoje Raporty</a></li>
-            <li sec:authorize="hasRole('ROLE_USER')"><a href="#">Twoje Zgłoszenia</a></li>
+            <li sec:authorize="hasRole('ROLE_USER')"><a href="#" th:href="@{/reports}">Twoje Zgłoszenia</a></li>
             <li sec:authorize="hasRole('ROLE_USER')"><a href="#">Nowe Zgłoszenie</a></li>
             <li><a href="#">Profil</a></li>
         </ul>

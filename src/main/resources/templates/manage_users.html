@@ -18,7 +18,7 @@
 <h1>Zarządzanie Użytkownikami</h1>
 
 <h2>Dodaj Użytkownika</h2>
-<form th:action="@{/add_user}" method="post">
+<form th:action="@{/admin/add_user}" method="post">
     <label for="firstName">Imię:</label>
     <input type="text" id="firstName" name="firstName" required>
 
@@ -61,7 +61,7 @@
     </thead>
     <tbody>
     <tr th:each="user : ${users}">
-        <form th:action="@{/edit_user/{id}(id=${user.id})}" method="post">
+        <form th:action="@{/admin/edit_user/{id}(id=${user.id})}" method="post">
             <td><input type="text" name="firstName" th:value="${user.firstName}" /></td>
             <td><input type="text" name="lastName" th:value="${user.lastName}" /></td>
             <td><input type="email" name="email" th:value="${user.email}" /></td>
@@ -84,7 +84,7 @@
         </form>
         <td>
             <!-- Formularz do usuwania poza głównym formularzem -->
-            <form th:action="@{/delete_user/{id}(id=${user.id})}" method="post" style="display:inline;">
+            <form th:action="@{/admin/delete_user/{id}(id=${user.id})}" method="post" style="display:inline;">
                 <button type="submit" class="delete-button">Usuń</button>
             </form>
         </td>

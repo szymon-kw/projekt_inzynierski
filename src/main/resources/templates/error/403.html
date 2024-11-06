@@ -2,34 +2,30 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Ustawienia konta</title>
+    <title>Brak uprawnień</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
     700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles/main.css">
+    <link rel="stylesheet" href="../../static/styles/main.css" th:href="@{/styles/main.css}">
 
 </head>
 <body>
 
+
 <div class="container">
     <nav>
-        <a href="" class="nav-item nav-item-logo">Strona główna</a>
-        <a href="" class="nav-item">Lista zgłoszeń</a>
-        <a href="" class="nav-item">Panel administracyjny</a>
-        <a href="" class="nav-item">Raporty</a>
-        <a href="" class="nav-item">Ustawienia konta</a>
-        <a href="" class="nav-item">Wyloguj się</a>
     </nav>
 
     <main class="main-content">
-        <h2 class="list-heading">Ustawienia konta</h2>
-        <ul class="list-border">
-            <li><a href="#">Zmień swoje dane kontaktowe</a></li>
-            <li><a href="#">Zmień hasło</a></li>
-        </ul>
+
+        <div class="list-border not-found-box">
+            <h2 class="list-heading">Niestety nie masz uprawnień do wyświetlenia tej strony</h2>
+            <a href="#" th:href="@{/home}">Powrót do strony głównej</a>
+        </div>
+
     </main>
 
     <footer style="height: 300px">

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły zgłoszenia</title>
+    <meta name="viewport" value="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
+    700;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link rel="stylesheet" href="../../static/styles/main.css" th:href="@{/styles/main.css}">
+
+</head>
+<body>
+
+<div class="container">
+
+    <nav>
+        <a href="" th:href="@{/home}" class="nav-item">Powrót do panelu</a>
+        <a href="" th:href="@{/logout}" class="nav-item">Wyloguj się</a>
+    </nav>
+    <main>
+        <div class="report-details-box">
+            <p><strong>Tytuł zgłoszenia: </strong> <span th:text="${report.title}">Tytuł zgłoszenia</span></p>
+            <p><strong>Status: </strong> <span th:text="${report.status.description}">Status zgłoszenia</span></p>
+            <p>
+                <strong>Pozostały czas:</strong>
+                <span th:text="${report.remainingTime.days}">5</span> dni.
+                <span th:text="${report.remainingTime.hours}">10</span> godz.
+                <span th:text="${report.remainingTime.minutes}">8</span> min.
+            </p>
+            <p><strong>Opis: </strong> <span th:text="${report.description}">Opis zgłoszenia</span></p>
+        </div>
+        <h2>Czat</h2>
+        <div class="chat-box" id="chat-box">
+            <p class="single-message-box" th:each="message: ${recentMessages}" th:text="|${message.user} (${#temporals.format(message.timestamp, 'HH:mm dd.MM.yyyy')}) : ${message.value}|"></p>
+        </div>
+        <div class="input-box">
+            <input id="messageToSend" type="text" placeholder="Wpisz swoją wiadomość..."/>
+            <button onclick="sendMessage()">Wyślij</button>
+        </div>
+
+        <div class="attachments-box" id="attachments-box">
+            <h3>Załączniki</h3>
+            <p class="attachment-item" th:each="attachment : ${attachments}">
+                <span th:text="${attachment.addingUser} + ' (' + ${#temporals.format(attachment.timestamp, 'HH:mm dd.MM.yyyy')} + ') : '"></span>
+                <a class= "attachment-link" th:href="${attachment.filePath}" target="_blank" th:text="${attachment.filePath.replaceAll('/uploads/','')}"></a>
+            </p>
+        </div>
+
+        <div>
+            <input type="file" id="attachmentFile"/>
+            <button onclick="sendAttachment()">Wyślij załącznik</button>
+        </div>
+    </main>
+
+</div>
+<script src="/scripts/chat.js"></script>
+<script>
+    reportId = [[${reportId}]];
+    const username = "[[${username}]]";
+
+    window.onload = function() {
+        connectt(reportId);
+        scrollToBottom();
+    };
+</script>
+
+<footer>
+    Stopka
+</footer>
+
+</body>
+</html>

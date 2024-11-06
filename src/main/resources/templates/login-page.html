@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
     700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles/main.css">
+    <link rel="stylesheet" href="../static/styles/main.css"  th:href="@{/styles/main.css}">
 
 </head>
 <body>
@@ -20,13 +20,21 @@
     </nav>
 
     <main class="main-content">
-        <h2 class="list-heading">Logowanie</h2>
-        <form method="post" action="" class="form form-margin">
-            <label for="">Adres e-mail</label>
-            <input type="email" name="" id="">
-            <label for="">Hasło</label>
-            <input type="password" name="" id="">
-            <button type="submit" class="form-submit-btn">Zaloguj się</button>
+        <p th:if="${param.error}" class="login-panel-msg">Nieprawidłowy e-mail lub hasło.</p>
+        <p th:if="${param.logout}" class="login-panel-msg">Zostałeś wylogowany.</p>
+        <h2 class="list-heading">Login</h2>
+        <form action="#" th:action="@{/login}" method="post" class="form form-margin">
+            <div>
+                <label for="username">Adres Email:</label>
+                <input type="text" id="username" name="username" required />
+            </div>
+            <div>
+                <label for="password">Hasło:</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div>
+                <button type="submit" class="form-submit-btn">Login</button>
+            </div>
         </form>
     </main>
 

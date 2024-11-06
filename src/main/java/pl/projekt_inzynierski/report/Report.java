@@ -1,8 +1,15 @@
-package pl.projekt_inzynierski;
+package pl.projekt_inzynierski.report;
 
 import jakarta.persistence.*;
+import pl.projekt_inzynierski.chat.ChatMessage;
+import pl.projekt_inzynierski.report.RemainingTime;
+import pl.projekt_inzynierski.attachment.Attachment;
+import pl.projekt_inzynierski.user.User;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Report {
@@ -10,6 +17,12 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany
+    @JoinColumn(name = "report_id")
+    private List<ChatMessage> messages = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "report_id")
+    private List<Attachment> attachments = new ArrayList<>();
     private String title;
     private String description;
     private LocalDateTime dateAdded;
@@ -21,6 +34,9 @@ public class Report {
     private String image;
     @ManyToOne
     private User reportingUser;
+    @ManyToOne
+    private User assignedUser;
+
 
     public Long getId() {
         return id;
@@ -92,5 +108,38 @@ public class Report {
 
     public void setReportingUser(User reportingUser) {
         this.reportingUser = reportingUser;
+    }
+
+    public User getAssignedUser() {
+        return assignedUser;
+    }
+
+    public void setAssignedUser(User assignedUser) {
+        this.assignedUser = assignedUser;
+    }
+
+    public RemainingTime getRemainingTime() {
+        Duration duration = Duration.between(LocalDateTime.now(), dueDate);
+        long days = duration.toDays();
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+
+        return new RemainingTime(days, hours, minutes);
+    }
+
+    public List<ChatMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<ChatMessage> messages) {
+        this.messages = messages;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 }

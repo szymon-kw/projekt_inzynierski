@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.projekt_inzynierski.company.CompanyRepository;
+import pl.projekt_inzynierski.user.User;
+import pl.projekt_inzynierski.user.UserManagementService;
+import pl.projekt_inzynierski.user.UserRoleRepository;
 
 import java.util.List;
 
@@ -42,13 +46,13 @@ public class UserManagementController {
     @PostMapping("/add_user")
     public String addUser(User user, Long companyId, Long roleId) {
         userManagementService.saveUser(user, companyId, roleId);
-        return "redirect:/manage_users";
+        return "redirect:/admin/manage_users";
     }
 
     @PostMapping("/delete_user/{id}")
     public String deleteUser(@PathVariable Long id) {
         userManagementService.deleteUser(id);
-        return "redirect:/manage_users";
+        return "redirect:/admin/manage_users";
     }
     @GetMapping("/edit_user/{id}")
     public String editUserForm(@PathVariable Long id, Model model) {
@@ -65,7 +69,7 @@ public class UserManagementController {
     @PostMapping("/edit_user/{id}")
     public String editUser(@PathVariable Long id, User updatedUser, Long companyId, Long roleId, String newPassword) {
         userManagementService.updateUser(id, updatedUser, companyId, roleId, newPassword);
-        return "redirect:/manage_users";
+        return "redirect:/admin/manage_users";
     }
 
 }

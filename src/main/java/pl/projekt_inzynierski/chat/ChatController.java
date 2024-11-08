@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import pl.projekt_inzynierski.attachment.Attachment;
+import pl.projekt_inzynierski.file.FileService;
 import pl.projekt_inzynierski.report.Report;
 import pl.projekt_inzynierski.report.ReportRepository;
 import pl.projekt_inzynierski.report.ReportService;
@@ -35,12 +36,14 @@ public class ChatController {
     private final ReportRepository reportRepository;
     private final ReportService reportService;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
-    public ChatController(ChatMessageRepository chatMessageRepository, ReportRepository reportRepository, ReportService reportService, UserRepository userRepository) {
+    public ChatController(ChatMessageRepository chatMessageRepository, ReportRepository reportRepository, ReportService reportService, UserRepository userRepository, FileService fileService) {
         this.chatMessageRepository = chatMessageRepository;
         this.reportRepository = reportRepository;
         this.reportService = reportService;
         this.userRepository = userRepository;
+        this.fileService = fileService;
     }
 
     @GetMapping("/chat")
@@ -79,14 +82,17 @@ public class ChatController {
     @PostMapping("/chat/upload")
     @ResponseBody
     public ResponseEntity<String> uploadAttachment(@RequestParam("file") MultipartFile file, @RequestParam("reportId") Long reportId) {
-
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("plik nie może być pusty");
         }
-
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get("uploads/" + fileName);
+        int fileIndex = 1;
         try {
-            String fileName = file.getOriginalFilename();
-            Path filePath = Paths.get("uploads/" + fileName);
+            while(fileService.filenameAlreadyExists(filePath.getFileName().toString())) {
+                filePath = fileService.createPathWithUniqueFilename(fileName, fileIndex, "uploads/");
+                fileIndex++;
+            }
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             Report report = reportRepository.findById(reportId)
@@ -95,14 +101,14 @@ public class ChatController {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
             Attachment attachment = new Attachment();
-            attachment.setFilePath("/uploads/" + fileName);
+            attachment.setFilePath("/uploads/" + filePath.getFileName().toString());
             attachment.setTimestamp(LocalDateTime.now());
             attachment.setAddingUser(username);
 
             report.getAttachments().add(attachment);
             reportRepository.save(report);
 
-            return ResponseEntity.ok("/uploads/" + fileName);
+            return ResponseEntity.ok("/uploads/" + filePath.getFileName().toString());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Błąd przy przesyłaniu pliku.");
         }

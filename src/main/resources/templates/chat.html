@@ -39,7 +39,7 @@
             <p class="single-message-box" th:each="message: ${recentMessages}" th:text="|${message.user} (${#temporals.format(message.timestamp, 'HH:mm dd.MM.yyyy')}) : ${message.value}|"></p>
         </div>
         <div class="input-box">
-            <input id="messageToSend" type="text" placeholder="Wpisz swoją wiadomość..."/>
+            <input id="messageToSend" type="text" placeholder="Wpisz swoją wiadomość..." required/>
             <button onclick="sendMessage()">Wyślij</button>
         </div>
 
@@ -47,7 +47,13 @@
             <h3>Załączniki</h3>
             <p class="attachment-item" th:each="attachment : ${attachments}">
                 <span th:text="${attachment.addingUser} + ' (' + ${#temporals.format(attachment.timestamp, 'HH:mm dd.MM.yyyy')} + ') : '"></span>
-                <a class= "attachment-link" th:href="${attachment.filePath}" target="_blank" th:text="${attachment.filePath.replaceAll('/uploads/','')}"></a>
+                <a class="attachment-link" th:href="${attachment.filePath}" target="_blank"
+                   th:text="${#strings.indexOf(attachment.filePath, '(') != -1
+                     ? #strings.substring(#strings.replace(attachment.filePath, '/uploads/', ''), 0, #strings.indexOf(#strings.replace(attachment.filePath, '/uploads/', ''), '('))
+                     + #strings.substring(#strings.replace(attachment.filePath, '/uploads/', ''), #strings.indexOf(#strings.replace(attachment.filePath, '/uploads/', ''), ')') + 1)
+                     : #strings.replace(attachment.filePath, '/uploads/', '')}"
+                ></a>
+
             </p>
         </div>
 

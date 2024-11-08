@@ -28,7 +28,8 @@ function showAttachment(url, user) {
     let link = document.createElement('a');
     link.href = url;
     link.target = "_blank";
-    link.textContent = `Załączono plik: ${url}`;
+    let urlToDisplay = url.toString().replace(/\/uploads\//, '').replace(/\(\d+\)/g, '');
+    link.textContent = `Załączono plik: ${urlToDisplay}`;
     link.classList.add("attachment-link");
 
     attachmentItem.textContent = `${user} (${formattedTime}) : `;
@@ -97,7 +98,12 @@ function connectt(reportIdParam) {
 
 function sendMessage() {
     if (client && client.connected) {
-        let messageToSend = document.getElementById('messageToSend').value;
+        let messageToSend = document.getElementById('messageToSend').value.trim();
+
+        if (messageToSend === "") {
+            alert("Wiadomość nie może być pusta!!");
+            return;
+        }
 
         client.send("/app/chat", {}, JSON.stringify({
             'value': messageToSend,
@@ -114,3 +120,10 @@ function scrollToBottom() {
     const chatBox = document.getElementById('chat-box');
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+document.getElementById('messageToSend').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        sendMessage();
+    }
+});

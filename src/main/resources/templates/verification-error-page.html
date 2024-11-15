@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Status</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
+    700;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../../static/styles/main.css" th:href="@{/styles/main.css}">
+
+</head>
+<body>
+
+
+<div class="container">
+    <nav>
+    </nav>
+
+    <main class="main-content">
+
+        <div th:unless="${param.success}" class="list-border not-found-box">
+            <h2 class="list-heading">Coś poszło nie tak!</h2>
+            <p th:if="${param.error}" style="font-weight: bold">Nieprawidłowy token dostępowy!</p>
+            <p th:if="${param.tokenExpired}" style="font-weight: bold">Link wygasł!</p>
+            <p th:if="${param.alreadyAactive}" style="font-weight: bold">Konto już zostało aktywowane!</p>
+            <br>
+            <p>Jeśli potrzebujesz pomocy skontaktuj się z nami: <a href="mailto:support.app.project@example.com" style="text-decoration: none; color: green">support.app.project@example.com</a></p>
+        </div>
+        <div th:if="${param.success}" class="list-border not-found-box">
+            <h2 class="list-heading">Udało się poprawie ustawić Hasło</h2>
+            <a href="#" th:href="@{/login}">Strona logowania</a>
+            <br>
+            <p>Jeśli potrzebujesz pomocy skontaktuj się z nami: <a href="mailto:support.app.project@example.com" style="text-decoration: none; color: green">support.app.project@example.com</a></p>
+        </div>
+    </main>
+
+    <footer style="height: 300px">
+        Stopka
+    </footer>
+</div>
+
+</body>
+</html>

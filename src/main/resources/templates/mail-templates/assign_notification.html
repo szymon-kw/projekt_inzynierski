@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Przypisano zgłoszenie</title>
+    <style>
+        body{
+
+            padding: 0;
+            font-family: Segoe UI;
+        }
+        .frame1{
+            width: 600px;
+            height: auto;
+            background-color: #f8f2f2;
+            margin: 0 auto;
+            text-align: center;
+            border-radius: 10px;
+
+        }
+        .header, .mbody, .content{
+            width: 400px;
+            height: auto;
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+        .header{
+            padding-top: 50px;
+        }
+        h1{
+            font-weight: 700;
+            font-size: 48px;
+        }
+        .mbody{
+            font-size: 20px;
+            color: #666666;
+            font-weight: 500;
+        }
+        .button{
+            text-align: center;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 21px;
+            background-color: #0055ff;
+            border-radius: 10px;
+            text-decoration: none;
+            height: auto;
+            display: block;
+            width: 60%;
+            margin: auto;
+        }
+        .content{
+            font-size: 18px;
+            color: #a2a2a7;
+            font-weight: 400;
+            padding-bottom: 50px;
+        }
+        .footer{
+            width: 450px;
+            height: auto;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 30px;
+            color: #BBBBBB;
+            font-size: 12px;
+            font-weight: 400;
+        }
+    </style>
+
 </head>
 <body>
-
+<div class="frame1">
+    <div class="header">
+        <h1>Przypisano zgłoszenie</h1>
+    </div>
+    <div class="mbody">
+        <p>Przypisano do ciebie zgłsozenie z firmy <span th:text="${CompanyName}" style="color: blueviolet">Example SA</span></p>
+        <p th:text="${AddDate} + ' - ' + ${CreatorUserName}">10.11.2024 - Michał</p>
+    </div>
+    <div class="content">
+        <p th:text="|Tytuł: ${ReportTitle}|">Tytuł: Błąd ładowania strony</p>
+    </div>
+</div>
+<div class="footer">
+    <p>Potrzebujesz pomocy? Napisz do nas: <a href="mailto:support.app.project@example.com" style="text-decoration: none; color: green">support.app.project@example.com</a></p>
+    Wiadomość wygenerowana automatycznie, prosimy na nią nie odpowiadać.
+</div>
 </body>
 </html>

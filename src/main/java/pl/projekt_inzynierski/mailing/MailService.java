@@ -14,8 +14,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
+import pl.projekt_inzynierski.report.Report;
+import pl.projekt_inzynierski.report.ReportRepository;
+import pl.projekt_inzynierski.report.ReportStatus;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class MailService {
@@ -24,24 +29,23 @@ public class MailService {
     private final ISpringTemplateEngine templateEngine;
     private final EmailQueue emailQueue;
     private final UserRepository userRepository;
-
+    private final ReportRepository reportRepository;
 
     @Autowired
     public MailService(JavaMailSender mailSender, ISpringTemplateEngine templateEngine
-            , EmailQueue emailQueue, UserRepository userRepository) {
+            , EmailQueue emailQueue, UserRepository userRepository, ReportRepository reportRepository) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.emailQueue = emailQueue;
         this.userRepository = userRepository;
+        this.reportRepository = reportRepository;
     }
 
     @Value("$spring.mail.username")
     private String fromEmailId;
     Logger logger = LoggerFactory.getLogger(MailService.class);
 
-
-
-    public void NewUserWelecomeMessage(String to, String UserName, String baseURL, String UserPassword) {
+    public void NewUserWelecomeMessage(String to, String UserName, String baseURL, String ExpirationDate) {
         final String title = "Witaj";
         try {
 
@@ -56,8 +60,7 @@ public class MailService {
             ctx.setVariable("UserName", UserName);
             ctx.setVariable("pageTitle", title);
             ctx.setVariable("uriLink", baseURL);
-            ctx.setVariable("UserEmail", to);
-            ctx.setVariable("UserPassword", UserPassword);
+            ctx.setVariable("ExpirationDate", ExpirationDate);
 
             String httpBody = templateEngine.process("mail-templates/new_user.html", ctx);
             helper.setText(httpBody, true);
@@ -76,7 +79,6 @@ public class MailService {
         final String[] AdminEmails = userRepository.findAllUserByRolesName("ADMINISTRATOR")
                 .stream().map(User::getEmail).toArray(String[]::new);
         final String title = "Nowe Zgłoszenie od " + ReportingUserName;
-
 
         try{
             MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -128,7 +130,13 @@ public class MailService {
         }
     }
 
-    @Scheduled (fixedRate = 10000) //co 10 sekund
+    @Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
+    public void mailReminder(){
+        final List<Report> reports = reportRepository.findAllByStatusNot(ReportStatus.COMPLETED);
+    }
+
+
+    @Scheduled (fixedRate = 10000) //every 10 sec
     @Async
     public void proccessEmailQueue() {
         while (!emailQueue.isEmpty()) {

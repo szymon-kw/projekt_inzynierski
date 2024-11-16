@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil użytkownika</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
+    700;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles/main.css" th:href="@{/styles/main.css}">
+</head>
+<body>
+<div class="container">
+    <nav>
+        <a th:href="@{/home}" class="nav-item">Powrót do panelu</a>
+        <a th:href="@{/logout}" class="nav-item">Wyloguj się</a>
+    </nav>
+
+    <main class="main-content">
+        <h1>Profil Użytkownika</h1>
+
+        <section class="profile-section">
+            <form th:action="@{/profile}" method="post">
+                <p><strong>Imię:</strong> <span th:text="${user.firstName}"></span></p>
+                <p><strong>Nazwisko:</strong> <span th:text="${user.lastName}"></span></p>
+                <p><strong>Typ konta:</strong> <span th:text="${user.roles.iterator().next().name}"></span></p>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" th:value="${user.email}" required />
+
+                <label for="newPassword">Nowe hasło:</label>
+                <input type="password" id="newPassword" name="newPassword" placeholder="Wprowadź nowe hasło" />
+
+                <button type="submit" class="submit-button">Zaktualizuj profil</button>
+            </form>
+
+            <div th:if="${param.success}">
+                <p class="success-message">Profil został pomyślnie zaktualizowany.</p>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

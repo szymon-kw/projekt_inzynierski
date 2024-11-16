@@ -45,7 +45,7 @@ public class MailService {
     private String fromEmailId;
     Logger logger = LoggerFactory.getLogger(MailService.class);
 
-    public void NewUserWelecomeMessage(String to, String UserName, String baseURL, String ExpirationDate) {
+    public void NewUserWelcomeMessage(String to, String UserName, String baseURL, String ExpirationDate) {
         final String title = "Witaj";
         try {
 
@@ -66,7 +66,7 @@ public class MailService {
             helper.setText(httpBody, true);
 
             emailQueue.addEmailToQueue(helper);
-            logger.info("New Mail to: " + to + " Queued | Category: New User");
+            logger.info("New Mail to: {} Queued | Category: New User", to);
 
         }catch (MessagingException e){
             logger.error("Can't add e-mail to queue: " + e.getMessage());
@@ -123,12 +123,41 @@ public class MailService {
             String httpBody = templateEngine.process("mail-templates/assign_notification.html", ctx);
             helper.setText(httpBody, true);
             emailQueue.addEmailToQueue(helper);
-            logger.info("Assign Notification to: " + to +" Queued | Category: Assign Notification");
+            logger.info("Assign Notification to: {} Queued | Category: Assign Notification", to);
 
         }catch (MessagingException e){
             logger.error("Can't add e-mail to queue: " + e.getMessage());
         }
     }
+    public void ForgotPasswordMessage(String to, String name, String tokenURI, String expirationTime){
+
+        try {
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setFrom(fromEmailId);
+            helper.setTo(to);
+            helper.setSubject("Prośba o zmianę hasła");
+            mimeMessage.setDescription(to + " | Category: Change Password");
+            //parametry do przekazania w modelu
+            Context ctx = new Context();
+            ctx.setVariable("UserName", name);
+            ctx.setVariable("uriLink", tokenURI);
+            ctx.setVariable("ExpirationDate", expirationTime);
+
+            String httpBody = templateEngine.process("mail-templates/change_password.html", ctx);
+            helper.setText(httpBody, true);
+
+            emailQueue.addEmailToQueue(helper);
+            logger.info("New Mail to: {} Queued | Category: Change Password", to);
+
+        }catch (MessagingException e){
+            logger.error("Can't add e-mail to queue: " + e.getMessage());
+        }
+
+    }
+
+
 
     @Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
     public void mailReminder(){
@@ -150,12 +179,12 @@ public class MailService {
                     try {
                         descripion = mimeMessageHelper.getMimeMessage().getDescription();
                     }catch (MessagingException e){
-                        logger.error("Can't get Mail info: " +e.getMessage());
+                        logger.error("Can't get Mail info: {}", e.getMessage());
                     }
 
-                    logger.info("Send e-mail to: " + descripion);
+                    logger.info("Send e-mail to: {}", descripion);
                 } catch (MailException e) {
-                    logger.error("Can't send e-mail: " + e.getMessage());
+                    logger.error("Can't send e-mail: {}", e.getMessage());
                 }
 
             }

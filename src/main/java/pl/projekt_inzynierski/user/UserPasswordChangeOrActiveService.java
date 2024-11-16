@@ -35,31 +35,46 @@ public class UserPasswordChangeOrActiveService {
     public void NewVerification(User user) {
         VeryficationToken veryficationToken = new VeryficationToken(UUID.randomUUID().toString(), VERIFICATION_ACCOUNT_EXPIRATION_TIME, user);
         veryficationTokenRepository.save(veryficationToken);
-        String verifUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("user/verification/" + veryficationToken.getToken()).build().toUriString();
+        String verifUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("account/verification/" + veryficationToken.getToken()).build().toUriString();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-        mailService.NewUserWelecomeMessage(user.getEmail(), user.getFirstName(), verifUrl, veryficationToken.getExpirationTime().format(formatter));
+        mailService.NewUserWelcomeMessage(user.getEmail(), user.getFirstName(), verifUrl, veryficationToken.getExpirationTime().format(formatter));
 
     }
-    public void NewResetPassword(User user) {
+    public Boolean NewResetPasswordMail(String username) {
+        Optional<User> OptionalUser = userRepository.findByEmailAndIsActiveIsTrue(username);
+        if (OptionalUser.isEmpty()) {
+            return false;
+        }
+        //User i VeryficationToken
+        User user = OptionalUser.get();
+        VeryficationToken veryficationToken = getOrCreateVeryficationTokenByToken(user);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
+        veryficationTokenRepository.save(veryficationToken);
+
+        //mail
+        String verifUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("account/forgot-password/" + veryficationToken.getToken()).build().toUriString();
+        mailService.ForgotPasswordMessage(user.getEmail(), user.getFirstName()
+                , verifUrl, veryficationToken.getExpirationTime().format(formatter));
+
+        return true;
     }
-    public boolean UserMailExists(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        return user.isPresent();
-    }
-    public String validateToken(String token) {
+    public String validateToken(String token, boolean cheackIfActive) {
 
         Optional<VeryficationToken> byToken = veryficationTokenRepository.findByToken(token);
-        if (byToken.isPresent()) {
-            if (!byToken.get().getUser().getIsActive()){
-                if (byToken.get().getExpirationTime().isAfter(LocalDateTime.now()) ){
+        if (byToken.isPresent()){
+            if (byToken.get().getExpirationTime().isAfter(LocalDateTime.now())){
+                if (!cheackIfActive){
                     return "OK";
-                }else {return "tokenExpired";}
-            }else {return "alreadyAactive";}
-        }
-        return "error";
+                } else if (!byToken.get().getUser().getIsActive()) {
+                    return "OK";
+                }else {return "alreadyAactive";}
+            }else {return "tokenExpired";}
+        }else {return "error";}
+
     }
     public void SetNewPassword(String token, String password) {
         Optional<VeryficationToken> byToken = veryficationTokenRepository.findByToken(token);
@@ -70,5 +85,16 @@ public class UserPasswordChangeOrActiveService {
 
         byToken.get().setExpirationTime(LocalDateTime.now().minusMinutes(1));
         veryficationTokenRepository.save(byToken.get());
+    }
+
+    private VeryficationToken getOrCreateVeryficationTokenByToken(User user) {
+        Optional<VeryficationToken> byToken = veryficationTokenRepository.findByUser(user);
+        if (byToken.isPresent()) {
+            byToken.get().setExpirationTime(byToken.get().getTokenExpirationTime(PASSWORD_RESET_EXPIRATION_TIME));
+            byToken.get().setToken(UUID.randomUUID().toString());
+            return byToken.get();
+        }else {
+            return new VeryficationToken(UUID.randomUUID().toString(), PASSWORD_RESET_EXPIRATION_TIME, user);
+        }
     }
 }

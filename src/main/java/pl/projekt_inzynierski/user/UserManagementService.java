@@ -71,6 +71,20 @@ public class UserManagementService {
 
     }
 
+    public void updateUserProfile(Long id, String email, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
+
+        user.setEmail(email);
+
+        if (newPassword != null && !newPassword.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        userRepository.save(user);
+    }
+
+
     public void updateUser(Long id, User updatedUser, Long companyId, Long roleId, String newPassword) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
@@ -114,7 +128,15 @@ public class UserManagementService {
         userRepository.deleteById(userId);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+    }
+
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 }
+
+
+

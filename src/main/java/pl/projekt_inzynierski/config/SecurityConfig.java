@@ -41,6 +41,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMINISTRATOR")
                         .requestMatchers("/delete_user/**").hasRole("ADMINISTRATOR")
+                        .requestMatchers("/reports/assign/").hasRole("ADMINISTRATOR")
                         .requestMatchers("/employee_panel/**").hasRole("EMPLOYEE")
                         .requestMatchers("/home/**").authenticated()
                         .requestMatchers("/default").authenticated()
@@ -51,6 +52,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**")
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/chat/upload"))
+                        //.ignoringRequestMatchers(new AntPathRequestMatcher("/reports/assign"))
                 )
                 .headers(headers -> headers
                         .frameOptions().sameOrigin()

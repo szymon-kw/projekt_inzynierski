@@ -192,7 +192,7 @@ public class MailService {
     }
 
 
-    @Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
+    //@Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
     public void mailReminder(){
 
         List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();

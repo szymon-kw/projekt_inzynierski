@@ -27,6 +27,7 @@ public class Report {
     private String description;
     private LocalDateTime dateAdded;
     private LocalDateTime dueDate;
+    private LocalDateTime timeToRespond;
     @Enumerated(EnumType.STRING)
     private ReportCategory category;
     @Enumerated(EnumType.STRING)
@@ -142,4 +143,13 @@ public class Report {
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
+
+    public LocalDateTime getTimeToRespond() {
+        return timeToRespond;
+    }
+
+    public void setTimeToRespond(LocalDateTime firstRespondTime) {
+        this.timeToRespond = firstRespondTime;
+    }
 }
+

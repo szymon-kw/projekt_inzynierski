@@ -4,6 +4,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
 import pl.projekt_inzynierski.user.UserRole;
@@ -31,6 +33,7 @@ public class ReportController {
                 .collect(Collectors.toSet());
         if (currentUserRoles.contains("ADMINISTRATOR")) {
             model.addAttribute("reports", reportService.getAllReports());
+            model.addAttribute("employees", userRepository.findAllUserByRolesName("EMPLOYEE")); //+++++ADMIN
         } else if(currentUserRoles.contains("EMPLOYEE")) {
             model.addAttribute("reports", reportService.getAllReportsByAssignedEmployeeEmail(currentUserName));
         }
@@ -39,4 +42,11 @@ public class ReportController {
         }
         return "report-listing";
     }
+
+    @PostMapping("/reports/assign")
+    String assignEmployeeToReport(@RequestParam Long reportId, @RequestParam Long employeeId) {
+        reportService.assignEmployeeToReport(reportId, employeeId);
+        return "redirect:/reports";
+    }
+
 }

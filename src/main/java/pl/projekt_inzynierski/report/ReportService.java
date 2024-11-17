@@ -3,6 +3,8 @@ package pl.projekt_inzynierski.report;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.projekt_inzynierski.chat.ChatMessage;
+import pl.projekt_inzynierski.user.User;
+import pl.projekt_inzynierski.user.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,8 +14,10 @@ import java.util.stream.StreamSupport;
 public class ReportService {
 
     private final ReportRepository reportRepository;
+    private final UserRepository userRepository;
 
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(UserRepository userRepository, ReportRepository reportRepository) {
+        this.userRepository = userRepository;
         this.reportRepository = reportRepository;
     }
 
@@ -42,4 +46,19 @@ public class ReportService {
     List<Report> getAllReportsByReportingUserEmail(String email) {
         return reportRepository.findAllByReportingUser_Email(email);
     }
+
+    @Transactional
+    public void assignEmployeeToReport(Long reportId, Long employeeId) {
+        Report report = reportRepository.findById(reportId).orElseThrow(() -> new IllegalArgumentException("Report not found"));
+        User employee = userRepository.findById(employeeId).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+        if (!employee.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE"))) {
+            throw new IllegalArgumentException("User is not an employee");
+        }
+
+        report.setAssignedUser(employee);
+        reportRepository.save(report);
+    }
+
+
 }

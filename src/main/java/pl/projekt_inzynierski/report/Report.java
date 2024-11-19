@@ -119,13 +119,25 @@ public class Report {
         this.assignedUser = assignedUser;
     }
 
-    public RemainingTime getRemainingTime() {
-        Duration duration = Duration.between(LocalDateTime.now(), dueDate);
-        long days = duration.toDays();
-        long hours = duration.toHours() % 24;
-        long minutes = duration.toMinutes() % 60;
+    public RemainingTime getRemainingTime(boolean forFirstReport) {
+        Duration duration = Duration.between(LocalDateTime.now(), forFirstReport? timeToRespond : dueDate);
+        long days;
+        long hours;
+        long minutes;
+        boolean isExpired;
+        if (duration.getSeconds()<0){
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            isExpired = true;
+        }else {
+            days = duration.toDays();
+            hours = duration.toHours() % 24;
+            minutes = duration.toMinutes() % 60;
+            isExpired = false;
+        }
 
-        return new RemainingTime(days, hours, minutes);
+        return new RemainingTime(days, hours, minutes, isExpired);
     }
 
     public List<ChatMessage> getMessages() {

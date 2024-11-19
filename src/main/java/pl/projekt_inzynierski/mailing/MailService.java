@@ -16,6 +16,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
 import pl.projekt_inzynierski.Dto.ReportDTO;
 import pl.projekt_inzynierski.Dto.ToSendReminderDTO;
+import pl.projekt_inzynierski.report.RemainingTime;
 import pl.projekt_inzynierski.report.Report;
 import pl.projekt_inzynierski.report.ReportRepository;
 import pl.projekt_inzynierski.report.ReportStatus;
@@ -173,11 +174,13 @@ public class MailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setFrom(fromEmailId);
             helper.setTo(toSend.getTo());
-            helper.setSubject(toSend.getTypesOfReminderMail().subject);
+            helper.setSubject(toSend.getTypesOfReminderMail().subject + "!");
             mimeMessage.setDescription(toSend.getTo() + " | Category: New Reminder Message");
             //parametry do przekazania w modelu
             Context ctx = new Context();
             ctx.setVariable("Reports", toSend.getReports());
+            ctx.setVariable("Title", toSend.getTypesOfReminderMail().subject);
+            ctx.setVariable("TitleFragment", toSend.getTypesOfReminderMail().titleFragment);
 
             String httpBody = templateEngine.process("mail-templates/new_remind.html", ctx);
             helper.setText(httpBody, true);
@@ -191,13 +194,58 @@ public class MailService {
 
     }
 
+    //@Scheduled(cron = "0 0 8 * * *")
+    public void noCloseReportReminder(){
 
-    //@Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
-    public void mailReminder(){
+        List<Report> AllReports = reportRepository.findAllByStatusNot(ReportStatus.COMPLETED);
+        if (!AllReports.isEmpty()) {
 
-        List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();
+            List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();
 
-        List<ToSendReminderDTO> ToSendFrames = prepareSendingFrameForEndingReports(adminsEmail);
+            List<Report> reportsForEmployee = AllReports.stream()
+                    .filter(report -> report.getAssignedUser() != null)
+                    .filter(report -> !adminsEmail.contains(report.getAssignedUser().getEmail()))
+                    .toList();
+
+            Map<String, List<ReportDTO>> groupedReportsForEmployee = reportsForEmployee.stream()
+                    .collect(Collectors.groupingBy(
+                            report -> report.getAssignedUser().getEmail(),
+                            Collectors.mapping(this::covertToReportDTO, Collectors.toList())
+                    ));
+
+            List<ToSendReminderDTO> ToSendEmployee = groupedReportsForEmployee.entrySet()
+                    .stream()
+                    .map(entry -> {
+                        ToSendReminderDTO dto = new ToSendReminderDTO();
+                        dto.setTo(entry.getKey());
+                        dto.setTypesOfReminderMail(TypesOfReminderMail.EMP_ALL); //do zmiany
+                        dto.setReports(entry.getValue());
+                        return dto;
+                    })
+                    .toList();
+
+            ToSendReminderDTO ToSendAdmin = new ToSendReminderDTO();
+            ToSendAdmin.setTo(String.join(", ", adminsEmail));
+            ToSendAdmin.setTypesOfReminderMail(TypesOfReminderMail.ADM_All); //do zmiany
+            ToSendAdmin.setReports(AllReports.stream().map(this::covertToReportDTO).toList());
+
+            List<ToSendReminderDTO> FinalToSendFrame = new ArrayList<>();
+
+            FinalToSendFrame.add(ToSendAdmin);
+            FinalToSendFrame.addAll(ToSendEmployee);
+
+            for (ToSendReminderDTO ToSendFrame : FinalToSendFrame) {
+                ReminderMessage(ToSendFrame);
+            }
+        }
+
+    }
+
+
+    @Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
+    public void shortTimeToCloseReportsReminder(){
+
+        List<ToSendReminderDTO> ToSendFrames = prepareSendingFrameForEndingReports();
 
         for (ToSendReminderDTO ToSendFrame : ToSendFrames) {
             ReminderMessage(ToSendFrame);
@@ -206,7 +254,7 @@ public class MailService {
     }
 
 
-    @Scheduled (fixedRate = 10000) //every 10 sec
+    //@Scheduled (fixedRate = 10000) //co 10 sec
     @Async
     public void proccessEmailQueue() {
         while (!emailQueue.isEmpty()) {
@@ -238,38 +286,38 @@ public class MailService {
         reportDTO.setReportTitle(report.getTitle());
         reportDTO.setReportingUserName(report.getReportingUser().getFirstName() + " " + report.getReportingUser().getLastName());
         reportDTO.setReportingCompanyName(report.getReportingUser().getCompany().getName());
-        reportDTO.setTimeToLeft(GetTimeToLeft(report.getDueDate()));
+        reportDTO.setTimeToLeft(GetTimeToLeft(report));
         return reportDTO;
     }
-    private String GetTimeToLeft(LocalDateTime dueTime){
+    private String GetTimeToLeft(Report report){
 
-        Duration duration = Duration.between(LocalDateTime.now(), dueTime);
-        long totalSeconds = duration.getSeconds();
-        if (totalSeconds < 0){return "Cza minął";}
+        RemainingTime remainingTime = report.getRemainingTime(false);
 
-        long days = totalSeconds / (24 * 3600);
-        long hours = (totalSeconds % (24 * 3600)) / 3600;
-        long minutes = (totalSeconds % 3600) / 60;
+        if (remainingTime.isExpired()){return "Cza minął";}
+
 
         StringBuilder result = new StringBuilder();
-        if (days > 0) {
-            result.append(days).append(" Dni ");
+        if (remainingTime.getDays() > 0) {
+            result.append(remainingTime.getDays()).append(" Dni ");
         }
-        if (hours > 0) {
-            result.append(hours).append(" Godz. ");
+        if (remainingTime.getHours() > 0) {
+            result.append(remainingTime.getHours()).append(" Godz. ");
         }
-        if (minutes > 0) {
-            result.append(minutes).append(" Min.");
+        if (remainingTime.getMinutes() > 0) {
+            result.append(remainingTime.getMinutes()).append(" Min.");
         }
         return result.toString().trim();
     }
 
-    private List<ToSendReminderDTO> prepareSendingFrameForEndingReports(List<String> adminsEmail){
+    private List<ToSendReminderDTO> prepareSendingFrameForEndingReports(){
 
-        List<Report> reportSetForAdminPending = GetWantedReport(true, true, true, adminsEmail);
-        List<Report> reportSetForEmployeePending = GetWantedReport(false, true, true, adminsEmail);
-        List<Report> reportSetForAdminReview = GetWantedReport(true, false, true, adminsEmail);
-        List<Report> reportSetForEmployeeReview = GetWantedReport(false, false, true, adminsEmail);
+        List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();
+        List<Report> AllReports = reportRepository.findAllByStatusNot(ReportStatus.COMPLETED);
+
+        List<Report> reportSetForAdminPending = GetWantedReport(true, true, adminsEmail, AllReports);
+        List<Report> reportSetForEmployeePending = GetWantedReport(false, true, adminsEmail, AllReports);
+        List<Report> reportSetForAdminReview = GetWantedReport(true, false, adminsEmail, AllReports);
+        List<Report> reportSetForEmployeeReview = GetWantedReport(false, false, adminsEmail, AllReports);
 
 
         Map<String, List<ReportDTO>> groupedReportsForPending = reportSetForEmployeePending.stream()
@@ -319,19 +367,19 @@ public class MailService {
         List<ToSendReminderDTO> ToSend = new ArrayList<>();
         ToSend.addAll(ToSendEmpPending);
         ToSend.addAll(ToSendEmpRev);
-        ToSend.add(ToSendAdmPending);
-        ToSend.add(ToSendAdmRev);
+        if (!ToSendAdmPending.getReports().isEmpty()) ToSend.add(ToSendAdmPending);
+        if (!ToSendAdmRev.getReports().isEmpty()) ToSend.add(ToSendAdmRev);
 
         return ToSend;
 
     }
-    private List<Report> GetWantedReport(boolean forAdmin, boolean ifPending, boolean isUrgent, List<String> adminsEmail){
+    private List<Report> GetWantedReport(boolean forAdmin, boolean ifPending, List<String> adminsEmail, List<Report> AllReports){
         //dla adminów przejdzie wszusko a dla emp nie
-        return reportRepository.findAllByStatusNot(ReportStatus.COMPLETED)
+        return AllReports
                 .stream()
                 .filter(report -> forAdmin || report.getAssignedUser() != null) //dla adminów przejdzie wszusko a dla emp nie
                 .filter(report -> forAdmin || !adminsEmail.contains(report.getAssignedUser().getEmail()))
-                .filter(report -> !isUrgent || isUrgent(report, ifPending))
+                .filter(report -> isUrgent(report, ifPending))
                 .filter(report -> filterByStatus(report, ifPending))
                 .toList();
     }
@@ -347,7 +395,8 @@ public class MailService {
     private boolean isUrgent(Report report, boolean ifPending) {
 
         Duration timeLeft = Duration.between(LocalDateTime.now(), ifPending? report.getTimeToRespond() : report.getDueDate());
-        return !timeLeft.isNegative() && timeLeft.toMinutes() <= 90; // Mniej niż 1,5 godziny
+        return timeLeft.toMinutes() <= 90;
+
     }
 }
 

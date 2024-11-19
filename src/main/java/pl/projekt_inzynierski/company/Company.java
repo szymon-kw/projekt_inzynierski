@@ -12,9 +12,9 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int criticalResponseTime; // czas na obsłużenie zgłoszenia kategorii CRITIAL (krytyczne) - w godzinach
-    private int majorResponseTime; // czas na obsłużenie zgłoszenia kategorii MAJOR (poważne) - w godzinach
-    private int minorResponseTime; // czas na obsłużenie zgoszenia kategorii MINOR (drobne) - w godzinach
+    private int timeToFirsRespond; // czas na pierwszą reakcje - w godzinach
+    private int timeToResolve; // czas na obsłużenie zgłoszenia w godzinach
+
     @OneToMany(mappedBy = "company")
     private List<User> users;
 
@@ -34,27 +34,19 @@ public class Company {
         this.name = name;
     }
 
-    public int getCriticalResponseTime() {
-        return criticalResponseTime;
+    public int getTimeToFirsRespond() {
+        return timeToFirsRespond;
     }
 
-    public void setCriticalResponseTime(int criticalResponseTime) {
-        this.criticalResponseTime = criticalResponseTime;
+    public void setTimeToFirsRespond(int timeToFirsRespond) {
+        this.timeToFirsRespond = timeToFirsRespond;
     }
 
-    public int getMajorResponseTime() {
-        return majorResponseTime;
+    public int getTimeToResolve() {
+        return timeToResolve;
     }
 
-    public void setMajorResponseTime(int majorResponseTime) {
-        this.majorResponseTime = majorResponseTime;
-    }
-
-    public int getMinorResponseTime() {
-        return minorResponseTime;
-    }
-
-    public void setMinorResponseTime(int minorResponseTime) {
-        this.minorResponseTime = minorResponseTime;
+    public void setTimeToResolve(int timeToResolve) {
+        this.timeToResolve = timeToResolve;
     }
 }

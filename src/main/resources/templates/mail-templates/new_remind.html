@@ -1,10 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <title th:title="${Title}">Czas odpowiedzi dobiega końca</title>
+    <style>
+        body{
+
+            padding: 0;
+            font-family: Segoe UI;
+        }
+        .frame1{
+            width: 800px;
+            height: auto;
+            background-color: #f8f2f2;
+            margin: 0 auto;
+            text-align: center;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+
+        }
+        .header, .mbody, .content{
+            width: auto;
+            height: auto;
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+        .header{
+            padding-top: 50px;
+        }
+        h1{
+            font-weight: 600;
+            font-size: 32px;
+        }
+        .mbody{
+            font-size: 18px;
+            color: #666666;
+            font-weight: 400;
+        }
+        .footer{
+            width: 450px;
+            height: auto;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 30px;
+            color: #BBBBBB;
+            font-size: 12px;
+            font-weight: 400;
+        }
+        table{
+            font-size: 14px;
+            display: table;
+            text-indent: initial;
+            unicode-bidi: isolate;
+            border-spacing: 2px;
+            border-collapse: collapse;
+            caption-side: bottom;
+            background-color: white;
+            width: 100%;
+            border-color: #dee2e6;
+            margin-bottom: 2rem;
+        }
+        thead{
+            border-style: solid;
+            border-width: 0;
+        }
+        .table-dark{
+            color: #fff;
+            background-color: #212529;
+            border-color: #4d5154;
+        }
+        th{
+            font-weight: bold;
+            padding: 8px;
+        }
+        td{
+            padding: 8px;
+        }
+        tr{
+            border-bottom: solid 1px #ced4da;
+        }
+        .table-danger{
+            background-color: #f8d7da;
+        }
+    </style>
+
 </head>
 <body>
+<div class="frame1">
+    <div>
+        <div class="header">
+            <h1 th:text="${Title}">Czas na rozwiązanie problemu się kończy!</h1>
+        </div>
+        &nbsp;
+        <div class="mbody">
+            <p th:unless="${TitleFragment == ''}" th:text="|${Title} dla ${TitleFragment}|">Czas na rozwiązanie problemu się kończy dla przypisanych do ciebie zgłoszeń:</p>
+            <table class="table">
+                <thead class="table-dark">
+                    <th scope="col">Lp.</th>
+                    <th scope="col">Zgłaszający</th>
+                    <th scope="col">Firma</th>
+                    <th scope="col">Tytuł zgłoszenia</th>
+                    <th scope="col">Pozostały czas</th>
+                </thead>
+                <tbody>
+                    <tr th:each="report, status: ${Reports}" th:class="${report.timeToLeft == 'Cza minął'?'table-danger' : ''}">
+                        <th scope="row" th:text="${status.count}">1</th>
+                        <td th:text="${report.reportingUserName}">Tomek Rusin</td>
+                        <td th:text="${report.reportingCompanyName}">Krzak SA</td>
+                        <td th:text="${report.reportTitle}">Zawieszająca się strona</td>
+                        <td th:text="${report.timeToLeft}">2 Dni 10 Godz. 15 Min.</td>
+                    </tr>
+                </tbody>
 
+            </table>
+        </div>
+
+    </div>
+
+</div>
+<div class="footer">
+    <p>Potrzebujesz pomocy? Napisz do nas: <a href="mailto:support.app.project@example.com" style="text-decoration: none; color: green">support.app.project@example.com</a></p>
+    Wiadomość wygenerowana automatycznie, prosimy na nią nie odpowiadać.
+</div>
 </body>
 </html>

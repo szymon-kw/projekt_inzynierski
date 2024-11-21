@@ -59,6 +59,10 @@ public class ReportService {
         report.setAssignedUser(employee);
         reportRepository.save(report);
     }
+    @Transactional
+    public void saveNewReport(Report report) {
+        reportRepository.save(report);
+    }
 
 
 }

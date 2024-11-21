@@ -113,6 +113,31 @@ public class MailService {
         }
     }
 
+    public void NewReportCreatedNotificationMessage(String to, String userName, String reportTitle, String addedTime){
+
+        try{
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+            helper.setFrom(fromEmailId);
+            helper.setTo(to);
+            helper.setSubject("Przyjęliśmy twoje zgłoszenie");
+            Context ctx = new Context();
+            ctx.setVariable("UserName", userName);
+            ctx.setVariable("ReportTitle", reportTitle);
+            ctx.setVariable("AddDate", addedTime);
+            String httpBody = templateEngine.process("mail-templates/new_report_notif_to_user.html", ctx);
+            helper.setText(httpBody, true);
+            mimeMessage.setDescription(to + " | Category: New Created Report Notification");
+            emailQueue.addEmailToQueue(helper);
+            logger.info("New Mail to {} Queued | Category: New Created Report Notification", to);
+
+        } catch (MessagingException e) {
+            logger.error("Can't add e-mail to queue: " + e.getMessage());
+        }
+
+    }
+
     public void  AssignNotificationMessage(String to, String ReportTitle, String ReportCompany, String ReportDate, String ReportingUserName){
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -242,7 +267,7 @@ public class MailService {
     }
 
 
-    @Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
+    //@Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
     public void shortTimeToCloseReportsReminder(){
 
         List<ToSendReminderDTO> ToSendFrames = prepareSendingFrameForEndingReports();
@@ -254,7 +279,7 @@ public class MailService {
     }
 
 
-    //@Scheduled (fixedRate = 10000) //co 10 sec
+    @Scheduled (fixedRate = 10000) //co 10 sec
     @Async
     public void proccessEmailQueue() {
         while (!emailQueue.isEmpty()) {

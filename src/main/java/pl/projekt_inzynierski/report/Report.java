@@ -119,8 +119,8 @@ public class Report {
         this.assignedUser = assignedUser;
     }
 
-    public RemainingTime getRemainingTime(boolean forFirstReport) {
-        Duration duration = Duration.between(LocalDateTime.now(), forFirstReport? timeToRespond : dueDate);
+    public RemainingTime getRemainingTime(boolean forFirstRespond) {
+        Duration duration = Duration.between(LocalDateTime.now(), forFirstRespond? timeToRespond : dueDate);
         long days;
         long hours;
         long minutes;

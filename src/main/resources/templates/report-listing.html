@@ -60,9 +60,11 @@
                     <td th:text="${status.count}">1</td>
                     <td th:text="${report.title}">Niedziałająca strona logowania</td>
                     <td th:text="${report.dateAdded}">19.10.2024 20:50</td>
-                    <td th:text="|${report.remainingTime.getDays()} dni ${report.remainingTime.getHours()} godz. ${report.remainingTime.getMinutes()} min.|">
-                        x dni x godzin x minut
+                    <td th:with="RemTime=${report.getRemainingTime(false)}">
+                        <span th:unless="${RemTime.isExpired()}" th:text="|${RemTime.getDays()} dni ${RemTime.getHours()} godz. ${RemTime.getMinutes()} min.|">x dni x godzin x minut</span>
+                        <span th:if="${RemTime.isExpired()}">Czas minął</span>
                     </td>
+
                     <td th:text="${report.category.description}">Poważne</td>
                     <td th:text="${report.status.description}">W trakcie przeglądu</td>
                     <td>

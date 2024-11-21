@@ -3,6 +3,7 @@ package pl.projekt_inzynierski.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.projekt_inzynierski.mailing.MailService;
 
@@ -32,6 +33,7 @@ public class UserPasswordChangeOrActiveService {
     private final int VERIFICATION_ACCOUNT_EXPIRATION_TIME = 60 * 24 * 7; // 7 dni
     private final int PASSWORD_RESET_EXPIRATION_TIME = 60; //60 min
 
+    @Transactional
     public void NewVerification(User user) {
         VeryficationToken veryficationToken = new VeryficationToken(UUID.randomUUID().toString(), VERIFICATION_ACCOUNT_EXPIRATION_TIME, user);
         veryficationTokenRepository.save(veryficationToken);
@@ -76,6 +78,7 @@ public class UserPasswordChangeOrActiveService {
         }else {return "error";}
 
     }
+
     public void SetNewPassword(String token, String password) {
         Optional<VeryficationToken> byToken = veryficationTokenRepository.findByToken(token);
         User user = byToken.get().getUser();

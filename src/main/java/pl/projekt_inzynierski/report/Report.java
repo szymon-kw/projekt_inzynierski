@@ -127,6 +127,10 @@ public class Report {
         return new RemainingTime(days, hours, minutes);
     }
 
+    public Duration getRemainingTimeDuration() {
+        return Duration.between(LocalDateTime.now(), dueDate);
+    }
+
     public List<ChatMessage> getMessages() {
         return messages;
     }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Strona główna</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
+    700;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/styles/main.css" th:href="@{/styles/main.css}">
+</head>
+<body>
+<div class="container">
+    <nav>
+        <a href="/logout" class="nav-item">Wyloguj się</a>
+    </nav>
+
+    <main class="main-content">
+        <h1>Generuj raport</h1>
+        <br><br><br>
+        <form action="" th:action="@{/generate-summary}" method="post">
+            <p>Wybierz okres z którego chcesz wygenerować raport</p>
+            <br>
+            <label for="dateFrom">Od: </label>
+            <input type="date" name="dateFrom" id="dateFrom">
+            <label for="dateTo">Do:</label>
+            <input type="date" name="dateTo" id="dateTo" th:value="${T(java.time.LocalDate).now()}">
+            <br>
+            <label for="category">Kategoria: </label>
+            <select name="category" id="category">
+                <option value="">Wszystkie</option>
+                <option th:each="category: ${categories}" th:value="${category}" th:text="${category.description}">kategoria</option>
+            </select>
+            <br>
+            <label for="status">Status: </label>
+            <select name="status" id="status">
+                <option value="">Wszystkie</option>
+                <option th:each="status: ${statusList}" th:value="${status}" th:text="${status.description}">status</option>
+            </select>
+            <div class="employee-report-filter-box" th:if="${employees}">
+                <label for="user">Uwzględnij raporty z przypisanym pracownikiem</label>
+                <select name="user" id="user">
+                    <option selected th:value="all">Wszyscy</option>
+                    <option th:each="employee: ${employees}" th:value="${employee.email}" th:text="${employee.email}">Pracownik</option>
+                </select>
+            </div>
+            <input th:unless="${employees}" type="hidden" name="user" th:value="${currentEmployee}">
+            <br>
+            <label for="sort">Sortowanie zgłoszeń</label>
+            <select name="sort" id="sort">
+                <option value="addedDateDesc" selected>Data zgłoszenia (od najnowszych)</option>
+                <option value="addedDateAsc">Data zgłoszenia (od najstarszych)</option>
+                <option value="remainingTimeAsc">Pozostały czas do końca (rosnąco)</option>
+                <option value="remainingTimeDesc">Pozostały czas do końca (malejąco)</option>
+            </select>
+            <br><br>
+            <button type="submit">Generuj raport</button>
+        </form>
+
+    </main>
+
+    <footer style="height: 300px">
+        Stopka
+    </footer>
+</div>
+
+</body>
+</html>

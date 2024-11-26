@@ -257,6 +257,12 @@ main {
     padding: 8px;
 }
 
+table th,
+table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
 .chat-box {
     margin-top: 30px;
     min-height: 200px;

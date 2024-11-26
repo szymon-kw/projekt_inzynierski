@@ -10,6 +10,7 @@ import pl.projekt_inzynierski.report.ReportRepository;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,6 +36,10 @@ public class UserManagementService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public List<User> findAllUsersByRole(String role) {
+        return userRepository.findAllByRoles_Name(role);
     }
 
     public void saveUser(User user, Long companyId, Long roleId) {
@@ -104,5 +109,9 @@ public class UserManagementService {
 
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

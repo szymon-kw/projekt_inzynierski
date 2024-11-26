@@ -18,7 +18,6 @@
             <column name="content" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_color" type="VARCHAR(255)"/>
             <column name="timestamp" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>

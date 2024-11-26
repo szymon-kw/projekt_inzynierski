@@ -49,6 +49,7 @@
                     <th>#</th>
                     <th>Tytuł</th>
                     <th>Data dodania</th>
+                    <th>Deadline</th>
                     <th>Pozostały czas</th>
                     <th>Kategoria</th>
                     <th>Status</th>
@@ -60,7 +61,11 @@
                     <td th:text="${status.count}">1</td>
                     <td th:text="${report.title}">Niedziałająca strona logowania</td>
                     <td th:text="${report.dateAdded}">19.10.2024 20:50</td>
-                    <td th:text="|${report.remainingTime.getDays()} dni ${report.remainingTime.getHours()} godz. ${report.remainingTime.getMinutes()} min.|" >x dni x godzin x minut</td>
+                    <td th:text="${report.dueDate}">25.10.2024 21:43</td>
+                    <td th:if="${report.remainingTime.days lt 0 or report.status.description == 'Zakończone'}">-</td>
+                    <td th:unless="${report.remainingTime.days lt 0 or report.status.description == 'Zakończone'}"
+                        th:text="|${report.remainingTime.days} dni ${report.remainingTime.hours} godz. ${report.remainingTime.minutes} min.|">
+                        x dni x godzin x minut</td>
                     <td th:text="${report.category.description}">Poważne</td>
                     <td th:text="${report.status.description}">W trakcie przeglądu</td>
                     <td th:text="${report.assignedUser != null ? report.assignedUser.email : 'Brak'}">jankowalski9</td>

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.projekt_inzynierski.company.CompanyRepository;
 import pl.projekt_inzynierski.user.User;
+import pl.projekt_inzynierski.Dto.UserDto;
 import pl.projekt_inzynierski.user.UserManagementService;
 import pl.projekt_inzynierski.user.UserRoleRepository;
 
@@ -44,8 +45,8 @@ public class UserManagementController {
     }
 
     @PostMapping("/add_user")
-    public String addUser(User user, Long companyId, Long roleId) {
-        userManagementService.saveUser(user, companyId, roleId);
+    public String addUser(UserDto user) {
+        userManagementService.saveUser(user);
         return "redirect:/admin/manage_users";
     }
 

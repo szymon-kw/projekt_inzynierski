@@ -4,11 +4,13 @@ package pl.projekt_inzynierski.report;
     private long days;
     private long hours;
     private long minutes;
+    private boolean isExpired;
 
-    public RemainingTime(long days, long hours, long minutes) {
+    public RemainingTime(long days, long hours, long minutes, boolean isExpired) {
         this.days = days;
         this.hours = hours;
         this.minutes = minutes;
+        this.isExpired = isExpired;
     }
 
     public long getDays() {
@@ -22,4 +24,8 @@ package pl.projekt_inzynierski.report;
     public long getMinutes() {
         return minutes;
     }
-}
+
+    public boolean isExpired() {
+         return isExpired;
+    }
+ }

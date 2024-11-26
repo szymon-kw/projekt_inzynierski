@@ -27,6 +27,7 @@ public class Report {
     private String description;
     private LocalDateTime dateAdded;
     private LocalDateTime dueDate;
+    private LocalDateTime timeToRespond;
     @Enumerated(EnumType.STRING)
     private ReportCategory category;
     @Enumerated(EnumType.STRING)
@@ -118,13 +119,25 @@ public class Report {
         this.assignedUser = assignedUser;
     }
 
-    public RemainingTime getRemainingTime() {
-        Duration duration = Duration.between(LocalDateTime.now(), dueDate);
-        long days = duration.toDays();
-        long hours = duration.toHours() % 24;
-        long minutes = duration.toMinutes() % 60;
+    public RemainingTime getRemainingTime(boolean forFirstRespond) {
+        Duration duration = Duration.between(LocalDateTime.now(), forFirstRespond? timeToRespond : dueDate);
+        long days;
+        long hours;
+        long minutes;
+        boolean isExpired;
+        if (duration.getSeconds()<0){
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            isExpired = true;
+        }else {
+            days = duration.toDays();
+            hours = duration.toHours() % 24;
+            minutes = duration.toMinutes() % 60;
+            isExpired = false;
+        }
 
-        return new RemainingTime(days, hours, minutes);
+        return new RemainingTime(days, hours, minutes, isExpired);
     }
 
     public Duration getRemainingTimeDuration() {
@@ -146,4 +159,13 @@ public class Report {
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
+
+    public LocalDateTime getTimeToRespond() {
+        return timeToRespond;
+    }
+
+    public void setTimeToRespond(LocalDateTime firstRespondTime) {
+        this.timeToRespond = firstRespondTime;
+    }
 }
+

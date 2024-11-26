@@ -3,6 +3,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.projekt_inzynierski.Dto.UserDto;
 import pl.projekt_inzynierski.company.Company;
 import pl.projekt_inzynierski.company.CompanyRepository;
 import pl.projekt_inzynierski.report.Report;
@@ -21,51 +22,68 @@ public class UserManagementService {
     private final UserRoleRepository userRoleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final ReportRepository reportRepository;
+    private final UserPasswordChangeOrActiveService userPasswordChangeOrActiveService;
+    private final VeryficationTokenRepository veryficationTokenRepository;
 
     @Autowired
     public UserManagementService(UserRepository userRepository,
                                  CompanyRepository companyRepository,
                                  UserRoleRepository userRoleRepository,
-                                 BCryptPasswordEncoder passwordEncoder, ReportRepository reportRepository) {
+                                 BCryptPasswordEncoder passwordEncoder, ReportRepository reportRepository,
+                                 UserPasswordChangeOrActiveService userPasswordChangeOrActiveService, VeryficationTokenRepository veryficationTokenRepository) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
         this.reportRepository = reportRepository;
+        this.userPasswordChangeOrActiveService = userPasswordChangeOrActiveService;
+        this.veryficationTokenRepository = veryficationTokenRepository;
     }
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    public List<User> findAllUsersByRole(String role) {
-        return userRepository.findAllByRoles_Name(role);
-    }
-
-    public void saveUser(User user, Long companyId, Long roleId) {
-
-        // Hashowanie hasła przed zapisem
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void saveUser(UserDto user) {
 
         // Pobierz obiekt Company na podstawie companyId
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid company ID: " + companyId));
+        Company company = companyRepository.findById(user.getCompanyId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid company ID: " + user.getCompanyId()));
 
         // Pobierz obiekt UserRole na podstawie roleId
-        UserRole role = userRoleRepository.findById(roleId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + roleId));
+        UserRole role = userRoleRepository.findById(user.getRoleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + user.getRoleId()));
 
-        // Ustaw firmę użytkownika
-        user.setCompany(company);
+        User newUser = new User();
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setEmail(user.getEmail());
+        newUser.setCompany(company);
+        newUser.setActive(false);
 
-        // Ustaw role użytkownika
         Set<UserRole> roles = new HashSet<>();
         roles.add(role);
-        user.setRoles(roles);
+        newUser.setRoles(roles);
 
         // Zapisz użytkownika
+        userRepository.save(newUser);
+        userPasswordChangeOrActiveService.NewVerification(newUser);
+
+    }
+
+    public void updateUserProfile(Long id, String email, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
+
+        user.setEmail(email);
+
+        if (newPassword != null && !newPassword.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+        }
+
         userRepository.save(user);
     }
+
 
     public void updateUser(Long id, User updatedUser, Long companyId, Long roleId, String newPassword) {
         User user = userRepository.findById(id)
@@ -103,15 +121,22 @@ public class UserManagementService {
 
         // A jeśli usuwamy uzytkownika jest zgłaszającym jakieś zgłoszenia to te zgłoszenia również usuwamy
         List<Report> reportByReportingUser = reportRepository.findByReportingUser(user);
+        Optional<VeryficationToken> veryficationToken = veryficationTokenRepository.findByUser(user);
+
+        veryficationToken.ifPresent(veryficationTokenRepository::delete);
         reportRepository.deleteAll(reportByReportingUser);
         userRepository.deleteById(userId);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
     }
 
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
-
-    public Optional<User> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 }
+
+
+

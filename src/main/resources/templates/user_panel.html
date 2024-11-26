@@ -27,8 +27,8 @@
             <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#" th:href="@{/reports}">Zgłoszenia</a></li>
             <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#" th:href="@{/summaries}">Twoje Raporty</a></li>
             <li sec:authorize="hasRole('ROLE_USER')"><a href="#" th:href="@{/reports}">Twoje Zgłoszenia</a></li>
-            <li sec:authorize="hasRole('ROLE_USER')"><a href="#">Nowe Zgłoszenie</a></li>
-            <li><a href="#">Profil</a></li>
+            <li sec:authorize="hasRole('ROLE_USER')"><a href="#" th:href="@{/new-report}">Nowe Zgłoszenie</a></li>
+            <li><a href="/profile">Profil</a></li>
         </ul>
     </main>
 

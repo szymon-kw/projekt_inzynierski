@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Zmiana danych konta</title>
@@ -9,40 +9,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
     700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles/main.css">
+    <link rel="stylesheet" th:href="@{/styles/main.css}" href="../static/styles/main.css">
 
 </head>
 <body>
 
-
 <div class="container">
     <nav>
-        <a href="" class="nav-item nav-item-logo">Strona główna</a>
-        <a href="" class="nav-item">Moje zgłoszenia</a>
+        <a href="/home" class="nav-item nav-item-logo">Strona główna</a>
+        <a th:href="@{/reports}" href="#" class="nav-item">Moje zgłoszenia</a>
         <a href="" class="nav-item">Zgłoś nowe zdarzenie</a>
         <a href="" class="nav-item">Ustawienia konta</a>
-        <a href="" class="nav-item">Wyloguj się</a>
+        <a th:herf="@{/logout}" href="/logout" class="nav-item">Wyloguj się</a>
     </nav>
 
-    <main class="main-content">
+    <main class="main-content" th:unless="${param.success}">
         <h2 class="list-heading">Dodaj nowe zgłoszenie zdarzenia niepożądanego</h2>
-        <form method="post" action="" class="form form-margin">
-            <label for="">Tytuł</label>
-            <input type="text" name="" id="" placeholder="Wpisz tytuł" required>
-            <label for="">Opis</label>
-            <textarea name="" id="" cols="60" rows="10" placeholder="Opisz zdarzenie"></textarea>
+        <p th:if="${param.invalid}" class="login-panel-msg">Nie podano wszyskich danych lub dane są niepoprawne</p>
+        <form method="post" th:action="@{/new-report/add}" action="" class="form form-margin" enctype="multipart/form-data">
+            <label for="title">Tytuł</label>
+            <input type="text" name="title" id="title" placeholder="Wpisz tytuł" required minlength="15">
+            <label for="description">Opis</label>
+            <textarea name="description" id="description" cols="60" rows="10" placeholder="Opisz zdarzenie" required minlength="50"></textarea>
             <label for="">Kategoria</label>
             <select name="" id="" required>
                 <option value="" disabled selected>Wybierz kategorię</option>
-                <option value="">Drobne</option>
-                <option value="">Poważne</option>
-                <option value="">Krytyczne</option>
+                <option value="">Not Implement</option>
             </select>
-            <label for="">Dołącz zdjęcie (dozwolony format: .jpeg lub .png)</label>
-            <input type="file" name="" id="" accept="image/png, image/jpeg">
+            <label for="file">Dołącz załączniki</label>
+            <input type="file" name="file" id="file" multiple>
 
             <button type="submit" class="form-submit-btn">Dodaj zgłoszenie</button>
         </form>
+    </main>
+    <main class="main-content" th:if="${param.success}">
+        <h2>Przyjeliśmy twoje zgłoszenie</h2>
+        &nbsp;
+        <p>Wysłaliśmy również potwierdzenie przyjęcia zgłoszenia na twoją skrzynkę mailową</p>
+        &nbsp;
+        <a href="" th:href="@{/home}" class="link-back">Powrót do strony głównej</a>
     </main>
 
     <footer>

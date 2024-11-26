@@ -28,9 +28,9 @@
             <p><strong>Status: </strong> <span th:text="${report.status.description}">Status zgłoszenia</span></p>
             <p>
                 <strong>Pozostały czas:</strong>
-                <span th:text="${report.remainingTime.days}">5</span> dni.
-                <span th:text="${report.remainingTime.hours}">10</span> godz.
-                <span th:text="${report.remainingTime.minutes}">8</span> min.
+                <span th:text="${report.getRemainingTime(false).days}">5</span> dni.
+                <span th:text="${report.getRemainingTime(false).hours}">10</span> godz.
+                <span th:text="${report.getRemainingTime(false).minutes}">8</span> min.
             </p>
             <p><strong>Opis: </strong> <span th:text="${report.description}">Opis zgłoszenia</span></p>
         </div>

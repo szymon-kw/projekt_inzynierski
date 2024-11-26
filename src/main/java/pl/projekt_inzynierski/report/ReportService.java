@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.projekt_inzynierski.chat.ChatMessage;
 import pl.projekt_inzynierski.user.User;
-
+import pl.projekt_inzynierski.user.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,9 +18,11 @@ import java.util.stream.StreamSupport;
 public class ReportService {
 
     private final ReportRepository reportRepository;
+    private final UserRepository userRepository;
 
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(ReportRepository reportRepository, UserRepository userRepository) {
         this.reportRepository = reportRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -36,7 +38,7 @@ public class ReportService {
         report.getMessages().add(message);
     }
 
-    public List<Report> getAllReports() {
+    List<Report> getAllReports() {
         return StreamSupport.stream(reportRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
@@ -48,6 +50,25 @@ public class ReportService {
     List<Report> getAllReportsByReportingUserEmail(String email) {
         return reportRepository.findAllByReportingUser_Email(email);
     }
+
+    @Transactional
+    public void assignEmployeeToReport(Long reportId, Long employeeId) {
+        Report report = reportRepository.findById(reportId).orElseThrow(() -> new IllegalArgumentException("Report not found"));
+        User employee = userRepository.findById(employeeId).orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+        if (!employee.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE"))) {
+            throw new IllegalArgumentException("User is not an employee");
+        }
+
+        report.setAssignedUser(employee);
+        reportRepository.save(report);
+    }
+    @Transactional
+    public void saveNewReport(Report report) {
+        reportRepository.save(report);
+    }
+
+
 
     public List<Report> getReportsByCategory(ReportCategory reportCategory) {
         return reportRepository.findAllByCategory(reportCategory);

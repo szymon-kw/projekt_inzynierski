@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Zaloguj się</title>
@@ -32,10 +32,12 @@
                 <label for="password">Hasło:</label>
                 <input type="password" id="password" name="password" required />
             </div>
+            <a href="#" th:href="@{/account/forgot-password}">Nie pamiętam hasła</a>
             <div>
                 <button type="submit" class="form-submit-btn">Login</button>
             </div>
         </form>
+
     </main>
 
     <footer style="height: 300px">

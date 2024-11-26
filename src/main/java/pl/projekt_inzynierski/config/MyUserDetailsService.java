@@ -1,5 +1,7 @@
 package pl.projekt_inzynierski.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,14 +23,15 @@ public class MyUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    private Logger log = LoggerFactory.getLogger(MyUserDetailsService.class);
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndIsActiveIsTrue(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         // Logi debugujące
-        System.out.println("User found: " + user.getEmail());
-        System.out.println("User found: " + user.getPassword());
+        log.info("User found with email: " + user.getEmail() + ", " + user.getPassword());
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

@@ -10,9 +10,12 @@
     <include file="004_create_table_chat_message.xml" relativeToChangelogFile="true"/>
     <include file="005_create_table_attachment.xml" relativeToChangelogFile="true"/>
     <include file="003_create_table_report.xml" relativeToChangelogFile="true"/>
+    <include file="006_create_table_veryfication_token.xml" relativeToChangelogFile="true"/>
 
     <include file="../testdata/001_companies.sql" relativeToChangelogFile="true"/>
     <include file="../testdata/002_users_and_roles.sql" relativeToChangelogFile="true"/>
     <include file="../testdata/003_reports.sql" relativeToChangelogFile="true"/>
+
+
 
 </databaseChangeLog>

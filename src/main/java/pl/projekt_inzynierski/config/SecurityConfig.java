@@ -37,11 +37,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/styles/**", "/js/**", "/image/**").permitAll()
+                        .requestMatchers("/login", "/styles/**", "/js/**", "/images/**", "/account/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMINISTRATOR")
-                        .requestMatchers("/delete_user/**").hasRole("ADMINISTRATOR")
-                        .requestMatchers("/home/**").authenticated()
+                        .requestMatchers("/reports/assign/").hasRole("ADMINISTRATOR")
                         .requestMatchers("/employee_panel/**").hasRole("EMPLOYEE")
                         .requestMatchers("/summaries", "/generate-summary").hasAnyRole("ADMINISTRATOR", "EMPLOYEE")
                         .requestMatchers("/default").authenticated()
@@ -52,6 +51,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**")
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/chat/upload"))
+                        //.ignoringRequestMatchers(new AntPathRequestMatcher("/reports/assign"))
                 )
                 .headers(headers -> headers
                         .frameOptions().sameOrigin()

@@ -22,8 +22,11 @@
             <column name="due_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="category" type="VARCHAR(50)">
+            <column name="time_to_respond" type="TIMESTAMP">
                 <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(50)">
+                <constraints nullable="true"/>
             </column>
             <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>

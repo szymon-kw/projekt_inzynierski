@@ -158,7 +158,8 @@ main {
     text-align: center;
 }
 
-.form input[type="text"], input[type="password"] {
+.form input[type="text"],
+.form input[type="password"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -327,4 +328,8 @@ footer {
     align-items: center;;
     height: 200px;
     background-color: #191919;
+}
+.link-back{
+    text-decoration: none;
+    color: forestgreen;
 }

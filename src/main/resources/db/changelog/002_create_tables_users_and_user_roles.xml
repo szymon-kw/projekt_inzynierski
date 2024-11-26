@@ -19,9 +19,12 @@
                 <constraints nullable="false" unique="true" />
             </column>
             <column name="password" type="VARCHAR(255)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="company_id" type="BIGINT" />
+            <column name="is_active" type="boolean">
+                <constraints nullable="false" />
+            </column>
         </createTable>
 
         <addForeignKeyConstraint

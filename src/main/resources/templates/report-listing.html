@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="https://www.thymeleaf.org">
+<html lang="pl" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Lista zgłoszeń</title>
@@ -49,7 +49,6 @@
                     <th>#</th>
                     <th>Tytuł</th>
                     <th>Data dodania</th>
-                    <th>Deadline</th>
                     <th>Pozostały czas</th>
                     <th>Kategoria</th>
                     <th>Status</th>
@@ -61,42 +60,39 @@
                     <td th:text="${status.count}">1</td>
                     <td th:text="${report.title}">Niedziałająca strona logowania</td>
                     <td th:text="${report.dateAdded}">19.10.2024 20:50</td>
-                    <td th:text="${report.dueDate}">25.10.2024 21:43</td>
-                    <td th:if="${report.remainingTime.days lt 0 or report.status.description == 'Zakończone'}">-</td>
-                    <td th:unless="${report.remainingTime.days lt 0 or report.status.description == 'Zakończone'}"
-                        th:text="|${report.remainingTime.days} dni ${report.remainingTime.hours} godz. ${report.remainingTime.minutes} min.|">
-                        x dni x godzin x minut</td>
+                    <td th:with="RemTime=${report.getRemainingTime(false)}">
+                        <span th:unless="${RemTime.isExpired()}" th:text="|${RemTime.getDays()} dni ${RemTime.getHours()} godz. ${RemTime.getMinutes()} min.|">x dni x godzin x minut</span>
+                        <span th:if="${RemTime.isExpired()}">Czas minął</span>
+                    </td>
+
                     <td th:text="${report.category.description}">Poważne</td>
                     <td th:text="${report.status.description}">W trakcie przeglądu</td>
-                    <td th:text="${report.assignedUser != null ? report.assignedUser.email : 'Brak'}">jankowalski9</td>
+                    <td>
+                        <!-- Widok dla administratora -->
+                        <div sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
+                            <form action="/reports/assign" method="post">
+                                <!-- Dodanie tokenu CSRF -->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                                <input type="hidden" name="reportId" th:value="${report.id}">
+                                <select name="employeeId">
+                                    <option value="" disabled selected>Wybierz pracownika</option>
+                                    <th:block th:each="employee : ${employees}">
+                                        <option th:value="${employee.id}"
+                                                th:selected="${report.assignedUser?.id == employee.id}"
+                                                th:text="${employee.email}">
+                                        </option>
+                                    </th:block>
+                                </select>
+                                <button type="submit">Zapisz</button>
+                            </form>
+                        </div>
+                        <!-- Widok dla pozostałych ról -->
+                        <div sec:authorize="!hasRole('ROLE_ADMINISTRATOR')">
+                            <span th:text="${report.assignedUser != null ? report.assignedUser.email : 'Brak'}"></span>
+                        </div>
+                    </td>
                     <td><a th:href="@{/chat(reportId=${report.id})}">Sprawdź</a></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>19.10.2024 20:50</td>
-                    <td>35min</td>
-                    <td>Poważne</td>
-                    <td>W trakcie przeglądu</td>
-                    <td>jankowalski9</td>
-                    <td><button>Sprawdź</button></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>19.10.2024 20:50</td>
-                    <td>35min</td>
-                    <td>Poważne</td>
-                    <td>W trakcie przeglądu</td>
-                    <td>jankowalski9</td>
-                    <td><button>Sprawdź</button></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>19.10.2024 20:50</td>
-                    <td>35min</td>
-                    <td>Poważne</td>
-                    <td>W trakcie przeglądu</td>
-                    <td>jankowalski9</td>
-                    <td><button>Sprawdź</button></td>
                 </tr>
                 </tbody>
             </table>

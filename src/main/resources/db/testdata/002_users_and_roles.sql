@@ -1,14 +1,14 @@
-INSERT INTO users (first_name, last_name, email, password, company_id) VALUES
+INSERT INTO users (first_name, last_name, email, password, company_id, is_active) VALUES
     /* password123 */
- ('Jan', 'Kowalski', 'jan.kowalski@example.com', '$2a$10$w6B2r20Uu1KuHQN9/whOqOAjHBBSxzCjlK3Lih.2WHOgtLlHds36C', 1),
+ ('Jan', 'Kowalski', 'jan.kowalski@example.com', '$2a$10$w6B2r20Uu1KuHQN9/whOqOAjHBBSxzCjlK3Lih.2WHOgtLlHds36C', 1, TRUE),
     /* qwerty1234 */
- ('Anna', 'Nowak', 'anna.nowak@example.com', '$2a$10$9HH2vpf3mCZUQkxw4mZ.UuD23ndJ39lmaovU4NqvOKZ7SlmK9hwJG', 2),
+ ('Anna', 'Nowak', 'anna.nowak@example.com', '$2a$10$9HH2vpf3mCZUQkxw4mZ.UuD23ndJ39lmaovU4NqvOKZ7SlmK9hwJG', 2, TRUE),
  /* strongPass789 */
- ('Piotr', 'Wiśniewski', 'admin@example.com', '$2a$10$ilPA7CzP.LBXMD0PHYc7cOY6r/WuQSP9oBz6u9C9yMvyhmzLB6YGm', 3),
+ ('Piotr', 'Wiśniewski', 'noreply.appproject@gmail.com', '$2a$10$ilPA7CzP.LBXMD0PHYc7cOY6r/WuQSP9oBz6u9C9yMvyhmzLB6YGm', 3, TRUE),
     /* safePass456 */
- ('Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', '$2a$10$L6D8jFwUZmXTIV/ifCmnu.KQ7pElFKLdpvVU/POV2o4mFj/B3x9bi', 4),
+ ('Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', '$2a$10$L6D8jFwUZmXTIV/ifCmnu.KQ7pElFKLdpvVU/POV2o4mFj/B3x9bi', 4, TRUE),
     /* passMZ890 */
- ('Michał', 'Zieliński', 'michal.zielinski@example.com', '$2a$10$.fJPS50Y98O8pIoSFHWxs.M7sAw7SOF4tcghhJi1awDVnr8A3pUci', 5);
+ ('Michał', 'Zieliński', 'michal.zielinski@example.com', '$2a$10$.fJPS50Y98O8pIoSFHWxs.M7sAw7SOF4tcghhJi1awDVnr8A3pUci', 5, TRUE);
 
 
 

@@ -25,6 +25,7 @@ public class User {
     joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<UserRole> roles = new HashSet<>();
+    private boolean isActive = false;
 
     public Long getId() {
         return id;
@@ -81,6 +82,10 @@ public class User {
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
     }
+
+    public boolean getIsActive() {return isActive;}
+
+    public void setActive(boolean active) {isActive = active;}
 
     public boolean hasRole(String role) {
         return roles != null && roles.stream()

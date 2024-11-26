@@ -13,13 +13,10 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true" />
             </column>
-            <column name="critical_response_time" type="INT">
+            <column name="time_to_firs_respond" type="INT">
                 <constraints nullable="false" />
             </column>
-            <column name="major_response_time" type="INT">
-                <constraints nullable="false" />
-            </column>
-            <column name="minor_response_time" type="INT">
+            <column name="time_to_resolve" type="INT">
                 <constraints nullable="false" />
             </column>
         </createTable>

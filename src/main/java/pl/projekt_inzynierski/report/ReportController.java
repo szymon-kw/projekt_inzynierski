@@ -19,7 +19,7 @@ public class ReportController {
     private final UserRepository userRepository;
     private final ReportService reportService;
 
-    public ReportController(UserRepository userRepository,ReportService reportService) {
+    public ReportController(UserRepository userRepository, ReportService reportService) {
         this.userRepository = userRepository;
         this.reportService = reportService;
     }
@@ -46,6 +46,7 @@ public class ReportController {
     @PostMapping("/reports/assign")
     String assignEmployeeToReport(@RequestParam Long reportId, @RequestParam Long employeeId) {
         reportService.assignEmployeeToReport(reportId, employeeId);
+        reportService.changeReportStatus(reportId, ReportStatus.UNDER_REVIEW);
         return "redirect:/reports";
     }
 

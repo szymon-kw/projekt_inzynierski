@@ -126,4 +126,10 @@ public class ReportService {
             default -> "Brak";
         };
     }
+
+    @Transactional
+    public void changeReportStatus(Long reportId, ReportStatus status) {
+        Report report = reportRepository.findById(reportId).orElseThrow();
+        report.setStatus(status);
+    }
 }

@@ -191,11 +191,12 @@ public class PdfSummaryGenerator {
     }
 
     private static String calculateRemainingTime(Report report) {
-        String remainingTimeTemplate = report.getRemainingTime().getDays() > 0 ? (report.getRemainingTime().getDays() + "d ") : "";
-        remainingTimeTemplate += report.getRemainingTime().getHours() > 0 ? (report.getRemainingTime().getHours() + "gdz. ") : "";
-        remainingTimeTemplate += report.getRemainingTime().getMinutes() > 0 ? (report.getRemainingTime().getMinutes() + "min.") : "";
-        String remainingTime = (report.getStatus() == ReportStatus.COMPLETED || (report.getRemainingTime().getDays() <= 0  &&
-                report.getRemainingTime().getDays() <= 0 && report.getRemainingTime().getMinutes() <= 0))? "            -": remainingTimeTemplate;
+        boolean forFirstRespond = report.getStatus() == ReportStatus.PENDING;
+        String remainingTimeTemplate = report.getRemainingTime(forFirstRespond).getDays() > 0 ? (report.getRemainingTime(forFirstRespond).getDays() + "d ") : "";
+        remainingTimeTemplate += report.getRemainingTime(forFirstRespond).getHours() > 0 ? (report.getRemainingTime(forFirstRespond).getHours() + "gdz. ") : "";
+        remainingTimeTemplate += report.getRemainingTime(forFirstRespond).getMinutes() > 0 ? (report.getRemainingTime(forFirstRespond).getMinutes() + "min.") : "";
+        String remainingTime = (report.getStatus() == ReportStatus.COMPLETED || (report.getRemainingTime(forFirstRespond).getDays() <= 0  &&
+                report.getRemainingTime(forFirstRespond).getDays() <= 0 && report.getRemainingTime(forFirstRespond).getMinutes() <= 0))? "            -": remainingTimeTemplate;
         return remainingTime;
     }
 

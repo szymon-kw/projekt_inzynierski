@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import pl.projekt_inzynierski.user.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReportRepository extends CrudRepository<Report, Long> {
@@ -14,4 +15,6 @@ public interface ReportRepository extends CrudRepository<Report, Long> {
     List<Report> findByAssignedUser(User user);
     List<Report> findByReportingUser(User user);
     List<Report> findAllByStatusNot(ReportStatus status);
+    List<Report> findAllByCategory(ReportCategory category);
+    List<Report> findAllByDateAddedIsBetween(LocalDateTime dateAdded, LocalDateTime dateAdded2);
 }

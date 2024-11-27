@@ -136,6 +136,10 @@ public class UserManagementService {
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
 
 

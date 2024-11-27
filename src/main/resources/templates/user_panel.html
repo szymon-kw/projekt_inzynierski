@@ -23,9 +23,9 @@
         <ul class="list-border">
             <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="/admin/manage_users">Zarządzaj Użytkownikami</a></li>
             <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#" th:href="@{/reports}">Panel Zgłoszeń</a></li>
-            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#">Raporty</a></li>
+            <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')"><a href="#" th:href="@{/summaries}">Raporty</a></li>
             <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#" th:href="@{/reports}">Zgłoszenia</a></li>
-            <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#">Twoje Raporty</a></li>
+            <li sec:authorize="hasRole('ROLE_EMPLOYEE')"><a href="#" th:href="@{/summaries}">Twoje Raporty</a></li>
             <li sec:authorize="hasRole('ROLE_USER')"><a href="#" th:href="@{/reports}">Twoje Zgłoszenia</a></li>
             <li sec:authorize="hasRole('ROLE_USER')"><a href="#" th:href="@{/new-report}">Nowe Zgłoszenie</a></li>
             <li><a href="/profile">Profil</a></li>

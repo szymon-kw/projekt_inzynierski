@@ -17,7 +17,6 @@ public class ChatMessage {
     private String value;
     @Column(name = "client")
     private String user;
-    private String userColor;
     private LocalDateTime timestamp;
 
 
@@ -34,14 +33,6 @@ public class ChatMessage {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUserColor() {
-        return userColor;
-    }
-
-    public void setUserColor(String userColor) {
-        this.userColor = userColor;
     }
 
     public String getUser() {

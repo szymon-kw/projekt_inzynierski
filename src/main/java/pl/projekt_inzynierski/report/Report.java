@@ -140,6 +140,10 @@ public class Report {
         return new RemainingTime(days, hours, minutes, isExpired);
     }
 
+    public Duration getRemainingTimeDuration() {
+        return Duration.between(LocalDateTime.now(), dueDate);
+    }
+
     public List<ChatMessage> getMessages() {
         return messages;
     }

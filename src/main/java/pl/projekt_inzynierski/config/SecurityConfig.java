@@ -42,7 +42,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/admin/**").hasRole("ADMINISTRATOR")
                         .requestMatchers("/reports/assign/").hasRole("ADMINISTRATOR")
                         .requestMatchers("/employee_panel/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/home/**").authenticated()
+                        .requestMatchers("/summaries", "/generate-summary").hasAnyRole("ADMINISTRATOR", "EMPLOYEE")
                         .requestMatchers("/default").authenticated()
                         .anyRequest().authenticated()
                 )

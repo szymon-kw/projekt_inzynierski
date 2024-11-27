@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,21 +15,18 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
+import pl.projekt_inzynierski.Dto.ChatQueueDto;
 import pl.projekt_inzynierski.Dto.ReportDTO;
 import pl.projekt_inzynierski.Dto.ToSendReminderDTO;
-import pl.projekt_inzynierski.report.RemainingTime;
-import pl.projekt_inzynierski.report.Report;
-import pl.projekt_inzynierski.report.ReportRepository;
-import pl.projekt_inzynierski.report.ReportStatus;
+import pl.projekt_inzynierski.report.*;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,20 +37,26 @@ public class MailService {
     private final EmailQueue emailQueue;
     private final UserRepository userRepository;
     private final ReportRepository reportRepository;
+    private final ChatNotificationQueue chatNotificationQueue;
+    private final ReportService reportService;
 
     @Autowired
     public MailService(JavaMailSender mailSender, ISpringTemplateEngine templateEngine
-            , EmailQueue emailQueue, UserRepository userRepository, ReportRepository reportRepository) {
+            , EmailQueue emailQueue, UserRepository userRepository, ReportRepository reportRepository
+            , ChatNotificationQueue chatNotificationQueue, ReportService reportService) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.emailQueue = emailQueue;
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
+        this.chatNotificationQueue = chatNotificationQueue;
+        this.reportService = reportService;
     }
 
     @Value("$spring.mail.username")
     private String fromEmailId;
     Logger logger = LoggerFactory.getLogger(MailService.class);
+
 
     public void NewUserWelcomeMessage(String to, String UserName, String baseURL, String ExpirationDate) {
         final String title = "Witaj";
@@ -219,6 +223,79 @@ public class MailService {
 
     }
 
+    public void LatsChatMessageNotification(String to, String MessageFrom, String MessageText, String TimePosted){
+
+        try {
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setFrom(fromEmailId);
+            helper.setTo(to);
+            helper.setSubject("Odpowiedziano w twoim zgłoszeniu");
+            mimeMessage.setDescription(to + " | Category: New Chat Message");
+            //parametry do przekazania w modelu
+            Context ctx = new Context();
+            ctx.setVariable("MessageFrom", MessageFrom);
+            ctx.setVariable("MessageText", MessageText);
+            ctx.setVariable("TimePosted", TimePosted);
+
+            String httpBody = templateEngine.process("mail-templates/new_chat_message.html", ctx);
+            helper.setText(httpBody, true);
+
+            emailQueue.addEmailToQueue(helper);
+            logger.info("New Mail to: {} Queued | Category: New Chat Message", to);
+
+        }catch (MessagingException e){
+            logger.error("Can't add e-mail to queue: " + e.getMessage());
+        }
+
+    }
+    private void ReportIsClosedMessage(String to, String ReportTitle, Boolean ToReporter ){
+
+        try {
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setFrom(fromEmailId);
+            helper.setTo(to);
+            if (ToReporter){
+                helper.setSubject("Zamknięto twoje zgłoszene");
+            }else {
+                helper.setSubject("Zamknięto zgłoszene");
+            }
+            mimeMessage.setDescription(to + " | Category: Report Closed Message");
+            //parametry do przekazania w modelu
+            Context ctx = new Context();
+            ctx.setVariable("ReportTitle", ReportTitle);
+            ctx.setVariable("ToReporter", ToReporter);
+
+            String httpBody = templateEngine.process("mail-templates/report_closed.html", ctx);
+            helper.setText(httpBody, true);
+
+            emailQueue.addEmailToQueue(helper);
+            logger.info("New Mail to: {} Queued | Category: Report Closed Message", to);
+
+        }catch (MessagingException e){
+            logger.error("Can't add e-mail to queue: " + e.getMessage());
+        }
+
+    }
+
+    public void PrepareReportClosedMessage(Report report){
+
+        String reportTitle = report.getTitle();
+        ReportIsClosedMessage(report.getReportingUser().getEmail(), reportTitle, true);
+        if (report.getAssignedUser() != null){
+            ReportIsClosedMessage(report.getAssignedUser().getEmail(), reportTitle, false);
+        }
+
+        List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream()
+                .map(User::getEmail)
+                .filter(email -> !Objects.equals(email, report.getAssignedUser().getEmail()))
+                .toList();
+        if (!adminsEmail.isEmpty()){ReportIsClosedMessage(String.join(", ", adminsEmail), reportTitle, false);}
+    }
+
     //@Scheduled(cron = "0 0 8 * * *")
     public void noCloseReportReminder(){
 
@@ -304,6 +381,27 @@ public class MailService {
             }
         }
     }
+
+    @Scheduled (fixedRate = 60000) //co 1 min
+    public void proccessChatQueueNotification() {
+
+        List<ChatQueueDto> chatQueue = chatNotificationQueue.getChatQueue();
+        if (!chatQueue.isEmpty()){
+
+            Iterator<ChatQueueDto> iterator = chatQueue.iterator();
+            while (iterator.hasNext()) {
+                ChatQueueDto chatQueueDto = iterator.next();
+
+                if (chatQueueDto.getRemindTime().isBefore(LocalDateTime.now())) {
+
+                    LatsChatMessageNotification(chatQueueDto.getReceiver(), chatQueueDto.getSender(), chatQueueDto.getMessage(), chatQueueDto.getSentTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+                    iterator.remove(); // Usuwanie elementu z kolejki
+                }
+            }
+        }
+
+    }
+
 
     // # Private Functions #
     private ReportDTO covertToReportDTO(Report report){

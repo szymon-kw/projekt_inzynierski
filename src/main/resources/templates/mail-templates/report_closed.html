@@ -79,19 +79,18 @@
 
         <img src="https://drive.google.com/drive-viewer/AKGpihbGt2EFknLhr26qki3AMUn3BSkD-bvPUIdWjyb2MAvlmbBvenreL1n07llQyO49Zc4wAvJPhAUtynMpNEko0OAQ0p-K0Tot5Nk=s2560" alt="logo">
         <div class="header">
-            <h1 th:text="|Wiaj ${UserName}|">Witaj John</h1>
+
+            <h1 th:unless="${ToReporter}">Zgłoszenie zostało zamknięte</h1>
+            <h1 th:if="${ToReporter}">Twoje zgłoszenie zostało zamknięte</h1>
         </div>
         <div class="mbody">
-            <p> <b>Twoje konto zostało utworzone!</b> </p>
-            <p>Aby mieć możliwość korzystania z naszego serwisu musisz aktywować konto</p>
-            &nbsp;
-            <a class="button" style="color: white" href="#" th:href="${uriLink}" >Aktywuj Konto</a>
-            &nbsp;
+            <p> <b>Zgłoszenie zmieniło status na zamknięte.</b> </p>
         </div>
         <div class="content">
-            <p>Konto zostranie aktywowane po ustawieniu hasła do konta</p>
-
-            <p>Podany link aktywacyjny jest ważny do : <b th:text="${ExpirationDate}">10.11.2024 10:16</b></p>
+            <p><b th:text="|Zgłoszenie: &quot;${ReportTitle}&quot;|">Zgłoszenie: Strona się nie wczytuje!</b></p>
+            &nbsp;
+            <p th:unless="${ToReporter}">Zakończono pracę nad zgłoszeniem.</p>
+            <p th:if="${ToReporter}">Zakończyliśmy pracę nad twoim zgłoszeniem. Mamy nadzieję że udało nam się pomóc. Jeśli pojawią się nowe problemy to daj nam znać.</p>
         </div>
 
     </div>

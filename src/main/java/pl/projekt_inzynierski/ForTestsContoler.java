@@ -43,9 +43,7 @@ public class ForTestsContoler {
     public String reportTest() {
 
         Report report = reportRepository.findById(2L);
-        RemainingTime remainingTime = report.getRemainingTime(true);
-        RemainingTime remainingTime2 = report.getRemainingTime(false);
-
+        mailService.PrepareReportClosedMessage(report);
         return  "Test complete";
     }
 

@@ -2,10 +2,13 @@ package pl.projekt_inzynierski.report;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.projekt_inzynierski.Dto.ChatQueueDto;
 import pl.projekt_inzynierski.chat.ChatMessage;
+import pl.projekt_inzynierski.mailing.ChatNotificationQueue;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -15,10 +18,12 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final ChatNotificationQueue chatNotificationQueue;
 
-    public ReportService(UserRepository userRepository, ReportRepository reportRepository) {
+    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue) {
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
+        this.chatNotificationQueue = chatNotificationQueue;
     }
 
 
@@ -32,6 +37,28 @@ public class ReportService {
     public void addNewMessage(ChatMessage message) {
         Report report = reportRepository.findById(message.getReportId()).orElseThrow();
         report.getMessages().add(message);
+
+        ChatQueueDto newChatDto = new ChatQueueDto();
+        newChatDto.setReportId(report.getId());
+        newChatDto.setMessage(message.getValue());
+        newChatDto.setRemindTime(LocalDateTime.now().plusMinutes(2));
+        newChatDto.setSender(message.getUser());
+        newChatDto.setSentTime(message.getTimestamp());
+        if (report.getReportingUser().getEmail().equals(message.getUser())) {
+            if (report.getAssignedUser() == null) {
+                List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();
+                newChatDto.setReceiver(String.join(", ", adminsEmail));
+            }else {
+                newChatDto.setReceiver(report.getAssignedUser().getEmail());
+            }
+
+        }else {
+            newChatDto.setReceiver(report.getReportingUser().getEmail());
+        }
+
+        chatNotificationQueue.addChatQueueNotification(newChatDto);
+
+
     }
 
     List<Report> getAllReports() {
@@ -64,5 +91,9 @@ public class ReportService {
         reportRepository.save(report);
     }
 
+    public ChatMessage getLastMessage(Report report) {
+        List<ChatMessage> messages = report.getMessages();
+        return messages.get(messages.size() - 1);
+    }
 
 }

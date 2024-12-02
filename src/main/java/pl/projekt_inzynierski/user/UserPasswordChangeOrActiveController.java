@@ -1,9 +1,14 @@
 package pl.projekt_inzynierski.user;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.projekt_inzynierski.CastomValidators.Password;
+import pl.projekt_inzynierski.Dto.PasswordsDTO;
 
 @Controller
 @RequestMapping("/account")
@@ -37,15 +42,20 @@ public class UserPasswordChangeOrActiveController {
         return "user_new_password";
     }
     @PostMapping("/verification/{token}")
-    public String AssignPassword(@PathVariable(required = true) String token, @RequestParam String password, @RequestParam String password_repit) {
+    public String AssignPassword(@PathVariable String token, @Valid PasswordsDTO passwords, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "redirect:/account/verification/" + token + "?wrongPassword";
+        }
+
         String Validation = userPasswordChangeOrActiveService.validateToken(token, true);
         if (!Validation.equals("OK")) {
             return "redirect:/account/verificationError?" + Validation;
-        } else if (!password.equals(password_repit)) {
+        } else if (!passwords.getPassword().equals(passwords.getConfirmPassword())) {
             return "redirect:/account/verification/" + token + "?diffrentPassword";
         }
 
-        userPasswordChangeOrActiveService.SetNewPassword(token, password);
+        userPasswordChangeOrActiveService.SetNewPassword(token, passwords.getPassword());
         return "redirect:/account/verification?success";
     }
 
@@ -72,15 +82,20 @@ public class UserPasswordChangeOrActiveController {
         model.addAttribute("formAction", "/account/forgot-password/" + token);
         return "user_new_password";
     }
+
     @PostMapping("/forgot-password/{token}")
-    public String changePasswordWithValues(@PathVariable(required = true) String token, @RequestParam String password, @RequestParam String password_repit) {
+    public String changePasswordWithValues(@PathVariable String token, @Valid PasswordsDTO passwords, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/account/forgot-password/" + token + "?wrongPassword";
+        }
+
         String Validation = userPasswordChangeOrActiveService.validateToken(token, false);
         if (!Validation.equals("OK")) {
             return "redirect:/account/verificationError?" + Validation;
-        } else if (!password.equals(password_repit)) {
-            return "redirect:/account/forgot-password/" + token + "?diffrentPassword";
+        } else if (!passwords.getPassword().equals(passwords.getConfirmPassword())) {
+            return "redirect:/account/forgot-password/" + token + "?differentPassword";
         }
-        userPasswordChangeOrActiveService.SetNewPassword(token, password);
+        userPasswordChangeOrActiveService.SetNewPassword(token, passwords.getPassword());
         return "redirect:/account/verification?success";
     }
 

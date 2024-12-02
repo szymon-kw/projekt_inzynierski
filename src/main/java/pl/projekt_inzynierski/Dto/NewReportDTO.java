@@ -1,11 +1,20 @@
 package pl.projekt_inzynierski.Dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public class NewReportDTO {
+
+    @NotNull(message = "Pole nie może być puste")
+    @Size(min = 15,message = "Minimalna długość to 15 znaków")
     private String title;
+
+    @NotNull(message = "Pole nie może być puste")
+    @Size(min = 50, max = 255, message = "Długość znaków powinna być być między 50 a 255 znaków")
     private String description;
     private List<MultipartFile> file;
     // kategory {not implemented}

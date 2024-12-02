@@ -334,3 +334,25 @@ footer {
     text-decoration: none;
     color: forestgreen;
 }
+
+.valid{
+    color: green;
+}
+.valid:before{
+    content: "✔";
+    position: relative;
+    left: -5px;
+}
+.invalid{
+    color: red;
+}
+.invalid:before{
+    content: "✖";
+    position: relative;
+    left: -5px;
+}
+.patternList{
+    color: #BBBBBB;
+    text-align: left;
+    display: block;
+}

@@ -1,9 +1,11 @@
 package pl.projekt_inzynierski.user;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.projekt_inzynierski.Dto.NewReportDTO;
@@ -24,14 +26,23 @@ public class UserAddingReportController {
         model.addAttribute("report", new NewReportDTO());
         return "add-new-report";
     }
+    @GetMapping("/add")
+    public String addReportGet() {
+        return "redirect:/new-report";
+    }
+
     @PostMapping(value = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String addNewReport(NewReportDTO reportDTO) {
+    public String addNewReport(@Valid @ModelAttribute("report") NewReportDTO report, BindingResult bindingResult, Model model) {
 
-        if (!userAddingReportService.validReport(reportDTO)) {
-            return "redirect:/new-report?invalid";
+
+//        if (!userAddingReportService.validReport(reportDTO)) {
+//            return "redirect:/new-report?invalid";
+//        }
+
+        if (bindingResult.hasErrors()) {
+            return "add-new-report";
         }
-
-        userAddingReportService.addNewReport(reportDTO);
+        userAddingReportService.addNewReport(report);
 
         return "redirect:/new-report?success";
 

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzanie Firmami</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../static/styles/main.css" th:href="@{/styles/main.css}">
+</head>
+<body>
+<div class="container">
+    <nav>
+        <a href="" th:href="@{/home}" class="nav-item">Powrót do panelu</a>
+        <a href="" th:href="@{/logout}" class="nav-item">Wyloguj się</a>
+    </nav>
+
+    <main class="main-content">
+        <h1>Zarządzanie Firmami</h1>
+        <br>
+
+        <section class="add-company-section">
+            <div th:if="${error}" class="error-message">
+                <p th:text="${error}"></p>
+            </div>
+            <h2>Dodaj Firmę</h2>
+            <form th:action="@{/admin/add_company}" method="post" class="add-company-form">
+                <label for="name">Nazwa:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="timeToFirsRespond">Czas na pierwszą reakcję (godziny):</label>
+                <input type="number" id="timeToFirsRespond" name="timeToFirsRespond" required>
+
+                <label for="timeToResolve">Czas na rozwiązanie (godziny):</label>
+                <input type="number" id="timeToResolve" name="timeToResolve" required>
+
+                <button type="submit" class="submit-button">Dodaj Firmę</button>
+            </form>
+        </section>
+
+        <br>
+        <br>
+
+        <section class="company-list-section">
+            <h2>Lista Firm</h2>
+            <table class="company-table">
+                <thead>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>Czas na pierwszą reakcję</th>
+                    <th>Czas na rozwiązanie</th>
+                    <th>Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="company : ${companies}">
+                    <form th:action="@{/admin/edit_company/{id}(id=${company.id})}" method="post">
+                        <td><input type="text" name="name" th:value="${company.name}" /></td>
+                        <td><input type="number" name="timeToFirsRespond" th:value="${company.timeToFirsRespond}" /></td>
+                        <td><input type="number" name="timeToResolve" th:value="${company.timeToResolve}" /></td>
+                        <td>
+                            <button type="submit" class="edit-button">Zatwierdź</button>
+                            <form th:action="@{/admin/delete_company/{id}(id=${company.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="delete-button">Usuń</button>
+                            </form>
+                        </td>
+                    </form>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        Stopka
+    </footer>
+
+</div>
+</body>
+</html>

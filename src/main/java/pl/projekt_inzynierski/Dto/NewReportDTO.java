@@ -10,11 +10,11 @@ import java.util.List;
 public class NewReportDTO {
 
     @NotNull(message = "Pole nie może być puste")
-    @Size(min = 15,message = "Minimalna długość to 15 znaków")
+    @Size(min = 15, max = 255,message = "Minimalna długość to 15 znaków, a maksymalna 255")
     private String title;
 
     @NotNull(message = "Pole nie może być puste")
-    @Size(min = 50, max = 255, message = "Długość znaków powinna być być między 50 a 255 znaków")
+    @Size(min = 50, message = "Minimalna długość to 50 znaków")
     private String description;
     private List<MultipartFile> file;
     // kategory {not implemented}

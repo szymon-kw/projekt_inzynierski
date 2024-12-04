@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Zaloguj się</title>
+    <!--
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,40 +11,114 @@
     700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../static/styles/main.css"  th:href="@{/styles/main.css}">
+    -->
+    <link rel="icon" type="image/x-icon" th:href="@{/images/Main_logo.png}" href="/static/images/Main_logo.png">
+
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/styles/style-motive.css}" href="/static/styles/style-motive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 </head>
-<body>
+<body data-bs-theme="light" id="pageBody" class="d-flex flex-column min-vh-100">
+    <nav class="nav navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid p-0">
+            <div class="collapse navbar-collapse">
+                <ul class="nav fs-5 nav-tabs w-100 ps-5 pe-5">
+                    <li>
+                        <div class="navbar-brand fs-3"><img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo" height="42" class="d-inline-block align-text-top">  IncidentHub</div>
+                    </li>
 
-
-<div class="container">
-    <nav>
+                    <div class="align-self-center ms-auto">
+                        <div class="container align-self-center">
+                            <input type="checkbox" class="checkbox" id="checkbox">
+                            <label for="checkbox" class="checkbox-label bg-black">
+                                <i class="fas fa-moon"></i>
+                                <i class="fas fa-sun"></i>
+                                <span class="ball"></span>
+                            </label>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
     </nav>
 
-    <main class="main-content">
-        <p th:if="${param.error}" class="login-panel-msg">Nieprawidłowy e-mail lub hasło.</p>
-        <p th:if="${param.logout}" class="login-panel-msg">Zostałeś wylogowany.</p>
-        <h2 class="list-heading">Login</h2>
-        <form action="#" th:action="@{/login}" method="post" class="form form-margin">
-            <div>
-                <label for="username">Adres Email:</label>
-                <input type="text" id="username" name="username" required />
+
+<div class="container d-flex flex-column align-items-center justify-content-center">
+
+    <img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo">
+    
+        <h2 class="mb-3">Logowanie</h2>
+        <div class="alert alert-danger w-50" th:if="${param.error}">
+            Nieprawidłowy <Strong>e-mail</Strong> lub <Strong>hasło</Strong>.
+        </div>
+        <div class="alert alert-warning w-50" th:if="${param.logout}">
+            Zostałeś wylogowany.
+        </div>
+
+        <form action="#" th:action="@{/login}" method="post" class="w-25">
+
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Adres Email:</label>
+                <div class="input-group">
+                    <span class="input-group-text">@</span>
+                    <input class="form-control" type="text" id="username" name="username" required />
+                </div>
+
             </div>
-            <div>
-                <label for="password">Hasło:</label>
-                <input type="password" id="password" name="password" required />
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Hasło:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                    <input class="form-control" type="password" id="password" name="password" required />
+                </div>
+
             </div>
-            <a href="#" th:href="@{/account/forgot-password}">Nie pamiętam hasła</a>
-            <div>
-                <button type="submit" class="form-submit-btn">Login</button>
+
+            <div class="mb-3">
+                <a href="#" th:href="@{/account/forgot-password}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Nie pamiętam hasła</a>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Zaloguj</button>
             </div>
         </form>
 
-    </main>
 
-    <footer style="height: 300px">
-        Stopka
-    </footer>
+
 </div>
 
+    <footer class="pt-4 border-top border-secondary mt-auto">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <h5>Kontakt</h5>
+                    <ul class="list-unstyled">
+                        <li>Email: <a href="mailto:support@incidenthub.com" class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">support@incidenthub.com</a></li>
+                        <li>Telefon: <span class="text-success">+48 123 456 789</span></li>
+                        <li>Adres: ul. Podchorążych 2, 33-332 Kraków</li>
+                    </ul>
+                </div>
+
+                <div class="col-md-6 text-md-end">
+                    <h5>Informacje</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none link-primary">Polityka prywatności</a></li>
+                        <li><a href="#" class="text-decoration-none link-primary">Regulamin</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 text-body-secondary">
+                <small>© 2025 IncidentHub | Aplikacja powstała w ramach projektu inżynierskiego</small>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{/scripts/motive.js}" src="/static/scripts/motive.js"></script>
 </body>
 </html>

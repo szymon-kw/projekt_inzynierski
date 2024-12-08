@@ -40,3 +40,8 @@
 .card:hover{
     background-color: rgba(187, 187, 187, 0.4);
 }
+
+.TableHead:hover{
+    cursor: pointer;
+    background-color: rgba(222, 226, 230, 0.37);
+}

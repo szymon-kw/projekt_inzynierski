@@ -1,6 +1,9 @@
 package pl.projekt_inzynierski.user;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.projekt_inzynierski.Dto.UserDto;
@@ -42,6 +45,13 @@ public class UserManagementService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public void updateAuthentication(String newEmail) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                newEmail, authentication.getCredentials(), authentication.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 
     public void saveUser(UserDto user) {

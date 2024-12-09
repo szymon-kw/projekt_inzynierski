@@ -1,6 +1,8 @@
 package pl.projekt_inzynierski;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,6 +80,10 @@ public class UserManagementController {
     @PostMapping("/edit_user/{id}")
     public String editUser(@PathVariable Long id, User updatedUser, Long companyId, Long roleId, String newPassword) {
         userManagementService.updateUser(id, updatedUser, companyId, roleId, newPassword);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userManagementService.updateAuthentication(updatedUser.getEmail());
+
         return "redirect:/admin/manage_users";
     }
 

@@ -1,12 +1,16 @@
 package pl.projekt_inzynierski.user;
 
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.projekt_inzynierski.CastomValidators.Password;
+import pl.projekt_inzynierski.Dto.PasswordsDTO;
 
 @Controller
 public class ProfileController {
@@ -31,29 +35,44 @@ public class ProfileController {
         return "profile";
     }
 
+
     @PostMapping("/profile")
-    public String updateProfile(String email, String newPassword) {
+    public String updateProfile(
+            String email,
+            @Valid PasswordsDTO passwordsDTO,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", userManagementService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+            model.addAttribute("error", "Hasło jest nieprawidłowe lub dane są niekompletne.");
+            return "profile";
+        }
+
+        if (!passwordsDTO.getPassword().equals(passwordsDTO.getConfirmPassword())) {
+            model.addAttribute("user", userManagementService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+            model.addAttribute("error", "Hasła muszą być takie same!");
+            return "profile";
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-
         User user = userManagementService.findByEmail(currentUsername);
+
         if (user == null) {
             throw new IllegalArgumentException("User not found with email: " + currentUsername);
         }
 
-        userManagementService.updateUserProfile(user.getId(), email, newPassword);
+
+        userManagementService.updateUserProfile(user.getId(), email, passwordsDTO.getPassword());
+
 
         if (!currentUsername.equals(email)) {
-            updateAuthentication(email);
+            userManagementService.updateAuthentication(email);
         }
 
         return "redirect:/profile?success";
     }
 
-    private void updateAuthentication(String newEmail) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Authentication newAuth = new UsernamePasswordAuthenticationToken(
-                newEmail, authentication.getCredentials(), authentication.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(newAuth);
-    }
+
 }

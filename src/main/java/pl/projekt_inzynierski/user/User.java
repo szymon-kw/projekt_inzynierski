@@ -2,8 +2,10 @@ package pl.projekt_inzynierski.user;
 
 import jakarta.persistence.*;
 import pl.projekt_inzynierski.company.Company;
+import pl.projekt_inzynierski.report.Report;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,6 +28,14 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<UserRole> roles = new HashSet<>();
     private boolean isActive = false;
+
+
+    @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> assignedReports;
+
+
+    @OneToMany(mappedBy = "reportingUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reportingReports;
 
     public Long getId() {
         return id;

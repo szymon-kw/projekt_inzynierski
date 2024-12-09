@@ -20,13 +20,12 @@ public class CompanyManagementService {
     }
 
     public void saveCompany(Company company) {
-        if (companyRepository.findByName(company.getName()).isPresent()) {
-            throw new IllegalArgumentException("Firma o podanej nazwie już istnieje: " + company.getName());
-        }
+        validateCompany(company, null);
         companyRepository.save(company);
     }
 
     public void updateCompany(Long id, Company updatedCompany) {
+        validateCompany(updatedCompany, id);
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid company ID: " + id));
         company.setName(updatedCompany.getName());
@@ -35,8 +34,26 @@ public class CompanyManagementService {
         companyRepository.save(company);
     }
 
+
     public void deleteCompany(Long id) {
-        companyRepository.deleteById(id);
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Firma o podanym ID nie istnieje: " + id));
+        companyRepository.delete(company);
+    }
+
+    private void validateCompany(Company company, Long id) {
+        if (company.getTimeToFirsRespond() < 1 || company.getTimeToFirsRespond() > 48) {
+            throw new IllegalArgumentException("Czas na pierwszą reakcję musi być pomiędzy 1 a 48 godzin.");
+        }
+        if (company.getTimeToResolve() < 1 || company.getTimeToResolve() > 168) {
+            throw new IllegalArgumentException("Czas na rozwiązanie musi być pomiędzy 1 a 168 godzin.");
+        }
+        if (companyRepository.findByName(company.getName()).isPresent()) {
+            Long existingCompanyId = companyRepository.findByName(company.getName()).get().getId();
+            if (id == null || !existingCompanyId.equals(id)) {
+                throw new IllegalArgumentException("Firma o podanej nazwie już istnieje: " + company.getName());
+            }
+        }
     }
 
 

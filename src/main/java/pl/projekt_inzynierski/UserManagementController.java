@@ -37,7 +37,6 @@ public class UserManagementController {
         List<User> users = userManagementService.findAllUsers();
         model.addAttribute("users", users);
 
-        // Dodaj listy firm i ról do modelu dla formularza
         model.addAttribute("companies", companyRepository.findAll());
         model.addAttribute("roles", userRoleRepository.findAll());
 
@@ -45,16 +44,25 @@ public class UserManagementController {
     }
 
     @PostMapping("/add_user")
-    public String addUser(UserDto user) {
-        userManagementService.saveUser(user);
-        return "redirect:/admin/manage_users";
-    }
+    public String addUser(UserDto user, Model model) {
+        try {
+            userManagementService.saveUser(user);
+            return "redirect:/admin/manage_users";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("companies", companyRepository.findAll());
+            model.addAttribute("roles", userRoleRepository.findAll());
+            return "manage_users";
+        }
 
+    }
+    
     @PostMapping("/delete_user/{id}")
     public String deleteUser(@PathVariable Long id) {
         userManagementService.deleteUser(id);
         return "redirect:/admin/manage_users";
     }
+
     @GetMapping("/edit_user/{id}")
     public String editUserForm(@PathVariable Long id, Model model) {
         User user = userManagementService.findUserById(id);

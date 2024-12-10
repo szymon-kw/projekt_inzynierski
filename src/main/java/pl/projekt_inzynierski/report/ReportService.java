@@ -260,10 +260,12 @@ public class ReportService {
 
     private Page<ListViewDto> getListViewDtos(int Page, int PageSize, String Search, String SortBy, String SortOrder, List<Report> result) {
         if (Search != null) {
-            result = result.stream()
-                    .filter(report -> report.getTitle().contains(Search))
-                    .filter(report -> report.getDescription().contains(Search))
-                    .filter(report -> report.getReportingUser().getCompany().getName().contains(Search))
+            String SearchWord = Search.toLowerCase();
+
+            result = result.stream().filter(report ->
+                    (report.getTitle().toLowerCase().contains(SearchWord)) ||
+                    (report.getDescription().toLowerCase().contains(SearchWord)) ||
+                    (report.getReportingUser().getCompany().getName().toLowerCase().contains(SearchWord)))
                     .collect(Collectors.toList());
         }
 

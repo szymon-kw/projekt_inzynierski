@@ -3,14 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista zgłoszeń</title>
-    <!--
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
-    700;1,900&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles/main.css" th:href="@{/styles/main.css}">-->
 
     <link rel="icon" type="image/x-icon" th:href="@{/images/Main_logo.png}" href="/static/images/Main_logo.png">
 
@@ -31,9 +23,6 @@
                     <div class="navbar-brand fs-3 pe-2"><img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo" height="42" class="d-inline-block align-text-top">  IncidentHub</div>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="#" th:href="@{/home}">Strona główna</a> </li>
-                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/reports}">Moje zgłoszenia</a></li>
-                <li class="nav-item"><a class="nav-link active" href="#" th:href="@{/new-report}">Nowe zgłoszenie</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ustawienia konta</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Wyloguj się</a></li>
                 <div class="align-self-center ms-auto">
                     <div class="container align-self-center">
@@ -72,7 +61,6 @@
 </div>
 <div class="container-fluid h-100">
     <div class="row h-100">
-
         <!-- Prawa część z przykładową listą -->
         <div class="col">
             <div class="row border shadow rounded m-3 p-3">
@@ -96,7 +84,8 @@
                                 <li><button class="dropdown-item d-flex justify-content-between align-items-center" id="dropdownPending">Oczekujące <span class="badge text-bg-warning rounded-pill" id="PendingCount">0</span> </button></li>
                                 <li><button class="dropdown-item d-flex justify-content-between align-items-center" id="dropdownUnderReview">W trakcie <span class="badge text-bg-success rounded-pill" id="UnderReviewCount">0</span> </button></li>
                                 <li><button class="dropdown-item d-flex justify-content-between align-items-center" id="dropdownComplete">Zakończone <span class="badge text-bg-secondary rounded-pill" id="CompleteCount">0</span> </button></li>
-                                <li><button class="dropdown-item d-flex justify-content-between align-items-center" id="dropdownUnAssigned">Nie przydzielone <span class="badge text-bg-danger rounded-pill" id="UnAssignedCount">0</span> </button></li>
+                                <li sec:authorize="hasRole('ROLE_ADMINISTRATOR')" ><button class="dropdown-item d-flex justify-content-between align-items-center" id="dropdownUnAssigned">Nie przydzielone <span class="badge text-bg-danger rounded-pill" id="UnAssignedCount">0</span> </button></li>
+                                <li sec:authorize="!hasRole('ROLE_ADMINISTRATOR')" style="display: none;"><button class="dropdown-item d-flex justify-content-between align-items-center" id="dropdownUnAssigned">Nie przydzielone <span class="badge text-bg-danger rounded-pill" id="UnAssignedCount">0</span> </button></li>
                             </ul>
                         </div>
                     </div>

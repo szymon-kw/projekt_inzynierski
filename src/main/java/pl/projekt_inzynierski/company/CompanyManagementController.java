@@ -39,8 +39,14 @@ public class CompanyManagementController {
 
 
     @PostMapping("/edit_company/{id}")
-    public String editCompany(@PathVariable Long id, Company updatedCompany) {
-        companyManagementService.updateCompany(id, updatedCompany);
+    public String editCompany(@PathVariable Long id, Company updatedCompany, Model model) {
+        try {
+            companyManagementService.updateCompany(id, updatedCompany);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("companies", companyManagementService.findAllCompanies());
+            return "manage_companies";
+        }
         return "redirect:/admin/manage_companies";
     }
 

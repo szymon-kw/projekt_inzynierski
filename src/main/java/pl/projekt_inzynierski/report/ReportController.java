@@ -55,6 +55,19 @@ public class ReportController {
         reportService.changeReportStatus(reportId, ReportStatus.UNDER_REVIEW);
         return "redirect:/reports";
     }
+
+    @PostMapping("/reports/close")
+    public String closeReport(@RequestParam Long reportId) {
+        reportService.closeReport(reportId);
+        return "redirect:/reports";
+    }
+
+    @PostMapping("/reports/delete")
+    public String deleteReport(@RequestParam Long reportId) {
+        reportService.deleteReport(reportId);
+        return "redirect:/reports";
+    }
+
     @GetMapping("/api/reports")
     @ResponseBody
     FinalListViewDto grtReportsInfo(Authentication authentication,
@@ -79,5 +92,7 @@ public class ReportController {
         }
 
     }
+
+
 
 }

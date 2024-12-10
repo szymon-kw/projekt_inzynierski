@@ -15,7 +15,10 @@ public class Company {
     private int timeToFirsRespond; // czas na pierwszą reakcje - w godzinach
     private int timeToResolve; // czas na obsłużenie zgłoszenia w godzinach
 
-    @OneToMany(mappedBy = "company")
+    //@OneToMany(mappedBy = "company")
+    //private List<User> users;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users;
 
     public Long getId() {

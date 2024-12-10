@@ -1,6 +1,8 @@
 package pl.projekt_inzynierski;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,6 @@ public class UserManagementController {
         List<User> users = userManagementService.findAllUsers();
         model.addAttribute("users", users);
 
-        // Dodaj listy firm i ról do modelu dla formularza
         model.addAttribute("companies", companyRepository.findAll());
         model.addAttribute("roles", userRoleRepository.findAll());
 
@@ -45,16 +46,25 @@ public class UserManagementController {
     }
 
     @PostMapping("/add_user")
-    public String addUser(UserDto user) {
-        userManagementService.saveUser(user);
-        return "redirect:/admin/manage_users";
-    }
+    public String addUser(UserDto user, Model model) {
+        try {
+            userManagementService.saveUser(user);
+            return "redirect:/admin/manage_users";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("companies", companyRepository.findAll());
+            model.addAttribute("roles", userRoleRepository.findAll());
+            return "manage_users";
+        }
 
+    }
+    
     @PostMapping("/delete_user/{id}")
     public String deleteUser(@PathVariable Long id) {
         userManagementService.deleteUser(id);
         return "redirect:/admin/manage_users";
     }
+
     @GetMapping("/edit_user/{id}")
     public String editUserForm(@PathVariable Long id, Model model) {
         User user = userManagementService.findUserById(id);
@@ -70,6 +80,10 @@ public class UserManagementController {
     @PostMapping("/edit_user/{id}")
     public String editUser(@PathVariable Long id, User updatedUser, Long companyId, Long roleId, String newPassword) {
         userManagementService.updateUser(id, updatedUser, companyId, roleId, newPassword);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userManagementService.updateAuthentication(updatedUser.getEmail());
+
         return "redirect:/admin/manage_users";
     }
 

@@ -1,6 +1,9 @@
 package pl.projekt_inzynierski.user;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.projekt_inzynierski.Dto.UserDto;
@@ -44,13 +47,24 @@ public class UserManagementService {
         return userRepository.findAll();
     }
 
+    public void updateAuthentication(String newEmail) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                newEmail, authentication.getCredentials(), authentication.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+    }
+
     public void saveUser(UserDto user) {
 
-        // Pobierz obiekt Company na podstawie companyId
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Użytkownik z podanym adresem e-mail już istnieje");
+        }
+
+
         Company company = companyRepository.findById(user.getCompanyId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid company ID: " + user.getCompanyId()));
 
-        // Pobierz obiekt UserRole na podstawie roleId
+
         UserRole role = userRoleRepository.findById(user.getRoleId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + user.getRoleId()));
 
@@ -65,7 +79,7 @@ public class UserManagementService {
         roles.add(role);
         newUser.setRoles(roles);
 
-        // Zapisz użytkownika
+
         userRepository.save(newUser);
         userPasswordChangeOrActiveService.NewVerification(newUser);
 
@@ -104,7 +118,7 @@ public class UserManagementService {
         user.setRoles(roles);
 
         if (newPassword != null && !newPassword.isEmpty()) {
-            user.setPassword(passwordEncoder.encode(newPassword)); // Haszowanie nowego hasła
+            user.setPassword(passwordEncoder.encode(newPassword));
         }
 
         userRepository.save(user);
@@ -115,11 +129,10 @@ public class UserManagementService {
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        // Jeśli użytkownik którego chcemy usunac jest obslugujacym jakieś zgłoszenia to w nich ustawiamy
-            // pole assignedUser na null
+
         reportRepository.findByAssignedUser(user).forEach(report -> report.setAssignedUser(null));
 
-        // A jeśli usuwamy uzytkownika jest zgłaszającym jakieś zgłoszenia to te zgłoszenia również usuwamy
+
         List<Report> reportByReportingUser = reportRepository.findByReportingUser(user);
         Optional<VeryficationToken> veryficationToken = veryficationTokenRepository.findByUser(user);
 

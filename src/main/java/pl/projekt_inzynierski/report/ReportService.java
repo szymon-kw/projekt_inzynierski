@@ -174,6 +174,22 @@ public class ReportService {
         report.setStatus(status);
     }
 
+    @Transactional
+    public void closeReport(Long reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new IllegalArgumentException("Report not found"));
+        report.setStatus(ReportStatus.COMPLETED);
+        reportRepository.save(report);
+    }
+
+    @Transactional
+    public void deleteReport(Long reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new IllegalArgumentException("Report not found"));
+        reportRepository.delete(report);
+    }
+
+
     public FinalListViewDto prepareListForAdmins(int Page, int PageSize, String ListCategory, String Search, String SortBy, String SortOrder) {
 
         List<Report> result = switch (ListCategory) {

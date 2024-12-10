@@ -52,17 +52,21 @@
                 </thead>
                 <tbody>
                 <tr th:each="company : ${companies}">
+
                     <form th:action="@{/admin/edit_company/{id}(id=${company.id})}" method="post">
                         <td><input type="text" name="name" th:value="${company.name}" /></td>
                         <td><input type="number" name="timeToFirsRespond" th:value="${company.timeToFirsRespond}" /></td>
                         <td><input type="number" name="timeToResolve" th:value="${company.timeToResolve}" /></td>
                         <td>
                             <button type="submit" class="edit-button">Zatwierdź</button>
-                            <form th:action="@{/admin/delete_company/{id}(id=${company.id})}" method="post" style="display:inline;">
-                                <button type="submit" class="delete-button">Usuń</button>
-                            </form>
                         </td>
                     </form>
+
+                    <td>
+                        <form th:action="@{/admin/delete_company/{id}(id=${company.id})}" method="post">
+                            <button type="submit" class="delete-button">Usuń</button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>

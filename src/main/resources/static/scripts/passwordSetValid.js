@@ -1,88 +1,91 @@
-var pasInput = document.getElementById("password");
-var pasConfInput = document.getElementById("confirmPassword")
+const pasInput = document.getElementById("password");
+const pasConfInput = document.getElementById("confirmPassword")
 
-var samePass = document.getElementById("samePassword")
+const samePass = document.getElementById("samePassword")
 var PasOk = false;
-var submitButton = document.getElementById("button");
-var length = document.getElementById("length");
-var lower = document.getElementById("lowercase");
-var upper = document.getElementById("uppercase");
-var number = document.getElementById("number");
-var specialChar = document.getElementById("specialChar");
+const submitButton = document.getElementById("button");
+const length = document.getElementById("length");
+const lower = document.getElementById("lowercase");
+const upper = document.getElementById("uppercase");
+const number = document.getElementById("number");
+const specialChar = document.getElementById("specialChar");
 
 pasInput.onkeyup = function () {
-    var intMatch = 0;
+    let intMatch = 0;
 
-    var lowerCasePattern = /[a-z]/g;
+    const lowerCasePattern = /[a-z]/g;
     if (pasInput.value.match(lowerCasePattern)) {
         intMatch++;
-        lower.classList.remove("invalid");
-        lower.classList.add("valid");
+        lower.classList.remove("d-block");
     } else {
-        lower.classList.remove("valid");
-        lower.classList.add("invalid");
+        lower.classList.add("d-block");
     }
 
-    var uppeCasePattern = /[A-Z]/g;
-    if (pasInput.value.match(uppeCasePattern)) {
+    const upperCasePattern = /[A-Z]/g;
+    if (pasInput.value.match(upperCasePattern)) {
         intMatch++;
-        upper.classList.remove("invalid");
-        upper.classList.add("valid");
+        upper.classList.remove("d-block");
     } else {
-        upper.classList.remove("valid");
-        upper.classList.add("invalid");
+        upper.classList.add("d-block");
     }
 
-    var numberPattern = /[0-9]/g;
+    const numberPattern = /[0-9]/g;
     if (pasInput.value.match(numberPattern)) {
         intMatch++;
-        number.classList.remove("invalid");
-        number.classList.add("valid");
+        number.classList.remove("d-block");
     } else {
-        number.classList.remove("valid");
-        number.classList.add("invalid");
+        number.classList.add("d-block");
     }
 
-    var specialCharPattern = /[!@#$%^&*()_\+\-=\[\]{};':"\\|,.<>\/?]/g;
+    const specialCharPattern = /[!@#$%^&*()_\+\-=\[\]{};':"\\|,.<>\/?]/g;
     if (pasInput.value.match(specialCharPattern)) {
         intMatch++;
-        specialChar.classList.remove("invalid");
-        specialChar.classList.add("valid");
+        specialChar.classList.remove("d-block");
     } else {
-        specialChar.classList.remove("valid");
-        specialChar.classList.add("invalid");
+        specialChar.classList.add("d-block");
     }
 
     if (pasInput.value.length >= 8 && pasInput.value.length <= 30) {
         intMatch++;
-        length.classList.remove("invalid");
-        length.classList.add("valid");
+        length.classList.remove("d-block");
     } else {
-        length.classList.remove("valid");
-        length.classList.add("invalid");
+        length.classList.add("d-block");
     }
 
     if (intMatch === 5) {
         PasOk = true;
+        pasInput.classList.add("is-valid");
+        pasInput.classList.remove("is-invalid");
     } else {
         PasOk = false;
+        pasInput.classList.add("is-invalid");
+        pasInput.classList.remove("is-valid");
     }
     if (pasInput.value === pasConfInput.value){
-        samePass.style.display = "none"
+        pasConfInput.classList.add("is-valid");
+        pasConfInput.classList.remove("is-invalid");
+        samePass.classList.remove("d-block");
         if(PasOk){
             submitButton.disabled = false;
         }
     } else {
-        samePass.style.display = "block"
+        pasConfInput.classList.add("is-invalid");
+        pasConfInput.classList.remove("is-valid");
+        samePass.classList.add("d-block");
         submitButton.disabled = true;
     }
 }
 pasConfInput.onkeyup = function (){
 
     if (pasInput.value === pasConfInput.value && PasOk){
-        samePass.style.display = "none"
+        pasConfInput.classList.add("is-valid");
+        pasConfInput.classList.remove("is-invalid");
+        samePass.classList.remove("d-block");
         submitButton.disabled = false;
     }else {
-        samePass.style.display = "block"
+        pasConfInput.classList.add("is-invalid");
+        pasConfInput.classList.remove("is-valid");
+        samePass.classList.add("d-block");
+        submitButton.disabled = true;
     }
 }

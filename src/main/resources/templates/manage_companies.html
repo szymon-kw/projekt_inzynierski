@@ -1,82 +1,149 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Zarządzanie Firmami</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../static/styles/main.css" th:href="@{/styles/main.css}">
+
+    <link rel="icon" type="image/x-icon" th:href="@{/images/Main_logo.png}" href="/static/images/Main_logo.png">
+
+    <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/styles/style-motive.css}" href="/static/styles/style-motive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
-<body>
-<div class="container">
-    <nav>
-        <a href="" th:href="@{/home}" class="nav-item">Powrót do panelu</a>
-        <a href="" th:href="@{/logout}" class="nav-item">Wyloguj się</a>
-    </nav>
+<body data-bs-theme="light" id="pageBody" class="d-flex flex-column min-vh-100">
 
-    <main class="main-content">
-        <h1>Zarządzanie Firmami</h1>
-        <br>
+<nav class="nav navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid p-0">
+        <div class="collapse navbar-collapse">
+            <ul class="nav fs-5 nav-tabs w-100 ps-4 pe-4">
+                <li>
+                    <div class="navbar-brand fs-3 pe-2">
+                        <img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo" height="42" class="d-inline-block align-text-top">  IncidentHub
+                    </div>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/home}">Strona główna</a></li>
+                <li class="nav-item"><a class="nav-link active" href="#">Zarządzanie firmami</a> </li>
+                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Wyloguj się</a></li>
+                <div class="align-self-center ms-auto">
+                    <div class="container align-self-center">
+                        <input type="checkbox" class="checkbox" id="checkbox">
+                        <label for="checkbox" class="checkbox-label bg-black">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                            <span class="ball"></span>
+                        </label>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-        <section class="add-company-section">
-            <div th:if="${error}" class="error-message">
-                <p th:text="${error}"></p>
-            </div>
-            <h2>Dodaj Firmę</h2>
-            <form th:action="@{/admin/add_company}" method="post" class="add-company-form">
-                <label for="name">Nazwa:</label>
-                <input type="text" id="name" name="name" required>
+<div class="container d-flex flex-column align-items-center justify-content-center flex-column mt-4">
 
-                <label for="timeToFirsRespond">Czas na pierwszą reakcję (godziny):</label>
-                <input type="number" id="timeToFirsRespond" name="timeToFirsRespond" required>
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+    <div class="add-user-section">
+        <div th:if="${successMessage}" class="alert alert-success w-100">
+            <p th:text="${successMessage}"></p>
+        </div>
+    </div>
 
-                <label for="timeToResolve">Czas na rozwiązanie (godziny):</label>
-                <input type="number" id="timeToResolve" name="timeToResolve" required>
 
-                <button type="submit" class="submit-button">Dodaj Firmę</button>
-            </form>
-        </section>
 
-        <br>
-        <br>
+    <div class="row justify-content-center">
+        <div class="card text-center shadow rounded-3 w-100">
+            <div class="card-body">
+                <section class="add-company-section">
 
-        <section class="company-list-section">
-            <h2>Lista Firm</h2>
-            <table class="company-table">
-                <thead>
-                <tr>
-                    <th>Nazwa</th>
-                    <th>Czas na pierwszą reakcję</th>
-                    <th>Czas na rozwiązanie</th>
-                    <th>Akcje</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="company : ${companies}">
-
-                    <form th:action="@{/admin/edit_company/{id}(id=${company.id})}" method="post">
-                        <td><input type="text" name="name" th:value="${company.name}" /></td>
-                        <td><input type="number" name="timeToFirsRespond" th:value="${company.timeToFirsRespond}" /></td>
-                        <td><input type="number" name="timeToResolve" th:value="${company.timeToResolve}" /></td>
-                        <td>
-                            <button type="submit" class="edit-button">Zatwierdź</button>
-                        </td>
+                    <h2 class="mb-3">Dodaj Firmę</h2>
+                    <form th:action="@{/admin/add_company}" method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nazwa:</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="timeToFirsRespond" class="form-label">Czas na pierwszą reakcję (godziny):</label>
+                            <input type="number" id="timeToFirsRespond" name="timeToFirsRespond" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="timeToResolve" class="form-label">Czas na rozwiązanie (godziny):</label>
+                            <input type="number" id="timeToResolve" name="timeToResolve" class="form-control" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Dodaj Firmę</button>
+                        </div>
                     </form>
+                </section>
+            </div>
+        </div>
+    </div>
 
-                    <td>
-                        <form th:action="@{/admin/delete_company/{id}(id=${company.id})}" method="post">
-                            <button type="submit" class="delete-button">Usuń</button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
-    </main>
-
-    <footer>
-        Stopka
-    </footer>
-
+    <div class="row justify-content-center mt-5">
+        <div class="card text-center shadow rounded-3 w-100">
+            <div class="card-body">
+                <section class="company-list-section">
+                    <h2 class="mb-3">Lista Firm</h2>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Nazwa</th>
+                            <th scope="col">Czas na pierwszą reakcję</th>
+                            <th scope="col">Czas na rozwiązanie</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="company : ${companies}">
+                            <form th:action="@{/admin/edit_company/{id}(id=${company.id})}" method="post">
+                                <td><input type="text" name="name" class="form-control" th:value="${company.name}" /></td>
+                                <td><input type="number" name="timeToFirsRespond" class="form-control" th:value="${company.timeToFirsRespond}" /></td>
+                                <td><input type="number" name="timeToResolve" class="form-control" th:value="${company.timeToResolve}" /></td>
+                                <td>
+                                    <button type="submit" class="btn btn-success">Zatwierdź</button>
+                                </td>
+                            </form>
+                            <td>
+                                <form th:action="@{/admin/delete_company/{id}(id=${company.id})}" method="post">
+                                    <button type="submit" class="btn btn-danger">Usuń</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+    </div>
 </div>
+
+<footer class="pt-4 border-top border-secondary mt-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Kontakt</h5>
+                <ul class="list-unstyled">
+                    <li>Email: <a href="mailto:support@incidenthub.com" class="link-success">support@incidenthub.com</a></li>
+                    <li>Telefon: <span class="text-success">+48 123 456 789</span></li>
+                    <li>Adres: ul. Podchorążych 2, 33-332 Kraków</li>
+                </ul>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <h5>Informacje</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-decoration-none link-primary">Polityka prywatności</a></li>
+                    <li><a href="#" class="text-decoration-none link-primary">Regulamin</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center mt-4 text-body-secondary">
+            <small>© 2025 IncidentHub | Aplikacja powstała w ramach projektu inżynierskiego</small>
+        </div>
+    </div>
+</footer>
+<script th:src="@{/scripts/motive.js}" src="/static/scripts/motive.js"></script>
 </body>
 </html>

@@ -29,12 +29,13 @@ public class CompanyManagementController {
     public String addCompany(Company company, Model model) {
         try {
             companyManagementService.saveCompany(company);
+            model.addAttribute("successMessage", "Firma została pomyślnie dodana.");
+            model.addAttribute("companies", companyManagementService.findAllCompanies());
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("companies", companyManagementService.findAllCompanies());
-            return "manage_companies";
         }
-        return "redirect:/admin/manage_companies";
+        return "manage_companies";
     }
 
 
@@ -42,18 +43,30 @@ public class CompanyManagementController {
     public String editCompany(@PathVariable Long id, Company updatedCompany, Model model) {
         try {
             companyManagementService.updateCompany(id, updatedCompany);
+            model.addAttribute("successMessage", "Firma została pomyślnie zaktualizowana.");
+            model.addAttribute("companies", companyManagementService.findAllCompanies());
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("companies", companyManagementService.findAllCompanies());
-            return "manage_companies";
         }
-        return "redirect:/admin/manage_companies";
+        return "manage_companies";
     }
 
     @PostMapping("/delete_company/{id}")
-    public String deleteCompany(@PathVariable Long id) {
-        companyManagementService.deleteCompany(id);
-        return "redirect:/admin/manage_companies";
+    public String deleteCompany(@PathVariable Long id, Model model) {
+        try {
+            companyManagementService.deleteCompany(id);
+            model.addAttribute("successMessage", "Firma została pomyślnie usunięta.");
+            model.addAttribute("companies", companyManagementService.findAllCompanies());
+
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("companies", companyManagementService.findAllCompanies());
+
+        }
+        return "manage_companies";
+
+
     }
 
 

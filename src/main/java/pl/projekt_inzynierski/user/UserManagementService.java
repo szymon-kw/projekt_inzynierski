@@ -103,6 +103,13 @@ public class UserManagementService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
 
+
+        userRepository.findByEmail(updatedUser.getEmail()).ifPresent(existingUser -> {
+            if (!existingUser.getId().equals(id)) {
+                throw new IllegalArgumentException("E-mail jest już przypisany do innego użytkownika.");
+            }
+        });
+
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid company ID: " + companyId));
         UserRole role = userRoleRepository.findById(roleId)
@@ -143,7 +150,7 @@ public class UserManagementService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+                .orElseThrow(() -> new IllegalArgumentException("Użytkownik z tym adresem email nie może być znaleziony: " + email));
     }
 
     public User findUserById(Long id) {

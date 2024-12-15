@@ -1,67 +1,200 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="https://www.thymeleaf.org">
+<html lang="pl" xmlns:th="https://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Szczegóły zgłoszenia</title>
-    <meta name="viewport" value="width=device-width, initial-scale=1">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,
-    700;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/Main_logo.png}" href="/static/images/Main_logo.png">
+
+
+
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <link rel="stylesheet" href="../../static/styles/main.css" th:href="@{/styles/main.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" th:href="@{/styles/style-motive.css}" href="/static/styles/style-motive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 
 </head>
-<body>
+<body data-bs-theme="light" id="pageBody" class="d-flex flex-column min-vh-100">
 
-<div class="container">
+<nav class="nav navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid p-0">
+        <div class="collapse navbar-collapse">
+            <ul class="nav fs-5 nav-tabs w-100 ps-4 pe-4">
+                <li>
+                    <div class="navbar-brand fs-3 pe-2"><img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo" height="42" class="d-inline-block align-text-top">  IncidentHub</div>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/home}">Strona główna</a> </li>
+                <li class="nav-item"><a class="nav-link active" href="#" th:href="@{/new-report}">Szczegóły zgłoszenia</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Wyloguj się</a></li>
+                <div class="align-self-center ms-auto">
+                    <div class="container align-self-center">
+                        <input type="checkbox" class="checkbox" id="checkbox">
+                        <label for="checkbox" class="checkbox-label bg-black">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                            <span class="ball"></span>
+                        </label>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <nav>
-        <a href="" th:href="@{/home}" class="nav-item">Powrót do panelu</a>
-        <a href="" th:href="@{/logout}" class="nav-item">Wyloguj się</a>
-    </nav>
-    <main>
-        <div class="report-details-box">
-            <p><strong>Tytuł zgłoszenia: </strong> <span th:text="${report.title}">Tytuł zgłoszenia</span></p>
-            <p><strong>Status: </strong> <span th:text="${report.status.description}">Status zgłoszenia</span></p>
-            <p>
-                <strong>Pozostały czas:</strong>
-                <span th:text="${report.getRemainingTime(false).days}">5</span> dni.
-                <span th:text="${report.getRemainingTime(false).hours}">10</span> godz.
-                <span th:text="${report.getRemainingTime(false).minutes}">8</span> min.
-            </p>
-            <p><strong>Opis: </strong> <span th:text="${report.description}">Opis zgłoszenia</span></p>
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h5 class="mb-0 m-1">
+                    Status: <span th:class="'badge ' + ${statusColor}" class="badge text-bg-primary" th:text="${report.getStatus().description}">W trakcie</span>
+                </h5>
+            </div>
+            <a th:if="${report.getStatus().description == 'Zakończone'}" sec:authorize="!hasRole('ROLE_USER')" th:href="@{'/reports/delete?reportId=' + ${reportId}}" class="float-end btn btn-danger">Usuń</a>
+            <a th:unless="${report.getStatus().description == 'Zakończone'}" sec:authorize="!hasRole('ROLE_USER')" th:href="@{'/reports/close?reportId=' + ${reportId}}" class="float-end btn btn-primary">Zamknij Zgłoszenie</a>
+
         </div>
-        <h2>Czat</h2>
-        <div class="chat-box" id="chat-box">
-            <p class="single-message-box" th:each="message: ${recentMessages}" th:text="|${message.user} (${#temporals.format(message.timestamp, 'HH:mm dd.MM.yyyy')}) : ${message.value}|"></p>
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-2 text-end fw-bolder">Tytuł zgłoszenia:</div>
+                <div th:text="${report.getTitle()}" class="col text-start text-primary fw-medium">Tytuł zgłoszeniaTytuł zgłoszeniaTytuł zgłoszenia</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 text-end fw-bolder">Opis:</div>
+                <div th:text="${report.getDescription()}" class="col text-start">Tutaj będzie długi opis zgłoszenia</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 text-end fw-bolder">Kategoria:</div>
+                <div class="col text-start">Tutaj kategoria zgłoszenia</div>
+            </div>
+            <div class="row mb-3 ">
+                <div class="col-2 text-end fw-bolder">Przydzielony pracownik:</div>
+                <div class="col text-start">
+                    <span th:text="${report.assignedUser?.getEmail() ?: 'Brak'}" class="me-3">employee@example.com</span>
+                    <form th:unless="${report.getStatus().description == 'Zakończone'}" sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:action="@{/reports/assign}" method="post" class="d-inline-block">
+                        <input type="hidden" name="reportId" th:value="${report.id}">
+                        <select class="form-select d-inline-block w-auto" name="employeeId">
+                            <option value="" disabled selected>Wybierz pracownika</option>
+                            <th:block th:each="employee : ${employees}">
+                                <option th:value="${employee.id}"
+                                        th:selected="${report.assignedUser?.id == employee.id}"
+                                        th:text="${employee.email}">
+                                </option>
+                            </th:block>
+                        </select>
+                        <button class="btn btn-outline-warning d-inline-block" type="submit">Zapisz</button>
+                    </form>
+                </div>
+
+            </div>
+            <div sec:authorize="!hasRole('ROLE_USER')" class="row mb-3">
+                <div class="col-2 text-end fw-bolder">Zgłaszający:</div>
+                <div th:text="${report.getReportingUser().getEmail()}" class="col text-start">user@example.com</div>
+            </div>
+            <div sec:authorize="!hasRole('ROLE_USER')" class="row mb-3">
+                <div class="col-2 text-end fw-bolder">Firma:</div>
+                <div th:text="${report.getReportingUser().getCompany().getName()}" class="col text-start">Example S.A.</div>
+            </div>
+
         </div>
-        <div class="input-box">
-            <input id="messageToSend" type="text" placeholder="Wpisz swoją wiadomość..." required/>
-            <button onclick="sendMessage()">Wyślij</button>
+        <div th:unless="${report.getStatus().description == 'Zakończone'}" sec:authorize="!hasRole('ROLE_USER')" class="card-footer">
+            <div th:if="${report.getStatus().description == 'Oczekujące'}" class="mb-2">
+                <strong>Czas na odpowiedz:</strong>
+                <div class="progress position-relative p-0" style="height: 20px">
+                    <div th:class="'progress-bar progress-bar-striped ' + ${timeToRespondColor}" th:attr="style='z-index: 1; width: ' + ${timeToRespondProgress} + '%;'"></div>
+                    <span th:text="|${report.getRemainingTime(true).days} Dni. ${report.getRemainingTime(true).hours} Godz. ${report.getRemainingTime(true).minutes} Min.|"
+                          class="position-absolute w-100 text-center fw-bold " style="z-index: 2;">5 Dni. 10 Godz. 50 Min.</span>
+                </div>
+            </div>
+            <div class="mb-2">
+                <strong>Pozostały czas na rozwiązanie:</strong>
+                <div class="progress position-relative p-0" style="height: 20px">
+                    <div th:class="'progress-bar progress-bar-striped ' + ${timeToResolveColor}" th:attr="style='z-index: 1; width: ' + ${timeToResolveProgress} + '%;'"></div>
+                    <span th:text="|${report.getRemainingTime(false).days} Dni. ${report.getRemainingTime(false).hours} Godz. ${report.getRemainingTime(false).minutes} Min.|"
+                          class="position-absolute w-100 text-center fw-bold" style="z-index: 2;">5 Dni. 10 Godz. 50 Min.</span>
+                </div>
+            </div>
         </div>
 
-        <div class="attachments-box" id="attachments-box">
-            <h3>Załączniki</h3>
-            <p class="attachment-item" th:each="attachment : ${attachments}">
-                <span th:text="${attachment.addingUser} + ' (' + ${#temporals.format(attachment.timestamp, 'HH:mm dd.MM.yyyy')} + ') : '"></span>
-                <a class="attachment-link" th:href="${attachment.filePath}" target="_blank"
-                   th:text="${#strings.indexOf(attachment.filePath, '(') != -1
-                     ? #strings.substring(#strings.replace(attachment.filePath, '/uploads/', ''), 0, #strings.indexOf(#strings.replace(attachment.filePath, '/uploads/', ''), '('))
-                     + #strings.substring(#strings.replace(attachment.filePath, '/uploads/', ''), #strings.indexOf(#strings.replace(attachment.filePath, '/uploads/', ''), ')') + 1)
-                     : #strings.replace(attachment.filePath, '/uploads/', '')}"
-                ></a>
+    </div>
 
-            </p>
+    <div class="card mt-5 mb-5 shadow">
+        <div class="text-center fs-4 fw-bolder card-header">
+            Korespondencja zgłoszenia
+        </div>
+        <div class="card-body">
+
+            <div class="chat-box" id="chat-box">
+                <p class="single-message-box" th:each="message: ${recentMessages}" th:text="|${message.user} (${#temporals.format(message.timestamp, 'HH:mm dd.MM.yyyy')}) : ${message.value}|"></p>
+            </div>
+
         </div>
 
-        <div>
-            <input type="file" id="attachmentFile"/>
-            <button onclick="sendAttachment()">Wyślij załącznik</button>
+        <div class="card-footer">
+            <div class="row">
+                <div th:if="${report.getStatus().description == 'Zakończone'}" class="col-11"><input id="messageToSend" class="form-control" type="text" placeholder="Wpisz swoją wiadomość..." disabled></div>
+                <div th:unless="${report.getStatus().description == 'Zakończone'}" class="col-11"><input id="messageToSend" class="form-control" type="text" placeholder="Wpisz swoją wiadomość..."></div>
+                <div class="col"><button onclick="sendMessage()" th:class="${report.getStatus().description == 'Zakończone'? 'btn btn-primary disabled' : 'btn btn-primary'}" class="btn btn-primary">Wyślij</button></div>
+            </div>
+
+
         </div>
-    </main>
+
+    </div>
+
+    <div class="card mt-3 mb-5 shadow">
+        <div class="card-header fs-5 fw-bolder">
+            Załączniki
+        </div>
+
+        <div id="attachments-box" class="card-body row">
+            <div th:each="attachment : ${attachments}" class="card border m-3 hover-ring"
+                 style="max-width: 11em"
+                 data-bs-toggle="popover"
+                 data-bs-trigger="hover focus"
+                 data-bs-placement="bottom"
+                 data-bs-html="true"
+                 th:attr="data-bs-title=${attachment.getFileName()}, data-bs-content='<b>Przesłał:</b><br> ' +
+                 ${attachment.getAddingUser()} + ' <br> <b>data:</b> <br>' + ${#temporals.format(attachment.timestamp, 'HH:mm dd.MM.yyyy')}"
+            >
+                <div class="card-body p-0">
+                    <div class="w-100 text-center mt-4 mb-4 text-danger">
+                        <i th:class="'fa-solid fa-4x ' + ${attachment.getFileIconClass()}" class="fa-solid fa-file fa-4x"></i>
+                    </div>
+                    <div class="row p-0 m-0">
+                        <div class="col col-8 p-0 m-0">
+                            <h6 th:text="${attachment.getFileName()}" class="mb-0 text-truncate">example.pdf</h6>
+                            <p><small th:text="${attachment.getFileSize()}" class="mb-0">323.4 kb</small></p>
+                        </div>
+                        <div class="col col-1 mt-3">
+                            <a href="" th:href="${attachment.getFilePath()}" target="_blank" class="show-file"><i class="fa-solid fa-2xl fa-share-from-square"></i></a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="card-footer p-3">
+            <div class="row p-0 m-0 justify-content-center text-center">
+                <div class="col-8">
+                    <input th:if="${report.getStatus().description == 'Zakończone'}" class="form-control" type="file" id="attachmentFile" disabled>
+                    <input th:unless="${report.getStatus().description == 'Zakończone'}" class="form-control" type="file" id="attachmentFile">
+                </div>
+                <div class="col-2"><button th:class="${report.getStatus().description == 'Zakończone'? 'btn btn-primary disabled' : 'btn btn-primary'}" class="btn btn-primary" onclick="sendAttachment()">Dodaj załącznik</button></div>
+            </div>
+        </div>
+
+    </div>
+
 
 </div>
 <script src="/scripts/chat.js"></script>
@@ -75,9 +208,36 @@
     };
 </script>
 
-<footer>
-    Stopka
+<footer class="pt-4 border-top border-secondary mt-auto">
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-6">
+                <h5>Kontakt</h5>
+                <ul class="list-unstyled">
+                    <li>Email: <a href="mailto:support@incidenthub.com" class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">support@incidenthub.com</a></li>
+                    <li>Telefon: <span class="text-success">+48 123 456 789</span></li>
+                    <li>Adres: ul. Podchorążych 2, 33-332 Kraków</li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 text-md-end">
+                <h5>Informacje</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-decoration-none link-primary">Polityka prywatności</a></li>
+                    <li><a href="#" class="text-decoration-none link-primary">Regulamin</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-4 text-body-secondary">
+            <small>© 2025 IncidentHub | Aplikacja powstała w ramach projektu inżynierskiego</small>
+        </div>
+    </div>
 </footer>
+
+<script th:src="@{/scripts/motive.js}" src="/static/scripts/motive.js"></script>
 
 </body>
 </html>

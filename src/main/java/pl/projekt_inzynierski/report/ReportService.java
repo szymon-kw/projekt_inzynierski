@@ -50,29 +50,36 @@ public class ReportService {
     @Transactional
     public void addNewMessage(ChatMessage message) {
         Report report = reportRepository.findById(message.getReportId()).orElseThrow();
-        report.getMessages().add(message);
 
-        ChatQueueDto newChatDto = new ChatQueueDto();
-        newChatDto.setReportId(report.getId());
-        newChatDto.setMessage(message.getValue());
-        newChatDto.setRemindTime(LocalDateTime.now().plusMinutes(2));
-        newChatDto.setSender(message.getUser());
-        newChatDto.setSentTime(message.getTimestamp());
-        if (report.getReportingUser().getEmail().equals(message.getUser())) {
-            if (report.getAssignedUser() == null) {
-                List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();
-                newChatDto.setReceiver(String.join(", ", adminsEmail));
+        if (report.getStatus() != ReportStatus.COMPLETED) {
+            if (report.getStatus() == ReportStatus.PENDING){
+                if (!report.getReportingUser().getEmail().equals(message.getUser())){
+                    report.setStatus(ReportStatus.UNDER_REVIEW);
+                    reportRepository.save(report);
+                }
+            }
+            report.getMessages().add(message);
+
+            ChatQueueDto newChatDto = new ChatQueueDto();
+            newChatDto.setReportId(report.getId());
+            newChatDto.setMessage(message.getValue());
+            newChatDto.setRemindTime(LocalDateTime.now().plusMinutes(2));
+            newChatDto.setSender(message.getUser());
+            newChatDto.setSentTime(message.getTimestamp());
+            if (report.getReportingUser().getEmail().equals(message.getUser())) {
+                if (report.getAssignedUser() == null) {
+                    List<String> adminsEmail = userRepository.findAllUserByRolesName("ADMINISTRATOR").stream().map(User::getEmail).toList();
+                    newChatDto.setReceiver(String.join(", ", adminsEmail));
+                }else {
+                    newChatDto.setReceiver(report.getAssignedUser().getEmail());
+                }
+
             }else {
-                newChatDto.setReceiver(report.getAssignedUser().getEmail());
+                newChatDto.setReceiver(report.getReportingUser().getEmail());
             }
 
-        }else {
-            newChatDto.setReceiver(report.getReportingUser().getEmail());
+            chatNotificationQueue.addChatQueueNotification(newChatDto);
         }
-
-        chatNotificationQueue.addChatQueueNotification(newChatDto);
-
-
     }
 
     List<Report> getAllReports() {
@@ -186,6 +193,9 @@ public class ReportService {
     public void deleteReport(Long reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
+
+
+
         reportRepository.delete(report);
     }
 

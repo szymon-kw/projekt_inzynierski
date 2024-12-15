@@ -19,6 +19,15 @@
             <column name="timestamp" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_icon_class" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
     </changeSet>

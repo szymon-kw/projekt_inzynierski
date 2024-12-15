@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Strona główna</title>
-
     <link rel="icon" type="image/x-icon" th:href="@{/images/Main_logo.png}" href="/static/images/Main_logo.png">
 
     <script src="https://kit.fontawesome.com/57474b4673.js" crossorigin="anonymous"></script>
@@ -42,7 +41,7 @@
 
 <div class="container d-flex flex-column align-items-center justify-content-center flex-column">
 
-    <h1 th:text="| Witaj ${UserName}|" class="pt-3">Witaj Tomasz</h1>
+    <h1 th:text="| Witaj ${#authentication.name}|" class="pt-3">Witaj Tomasz</h1>
 
     <div class="row justify-content-center">
 
@@ -55,7 +54,7 @@
         </a>
 
         <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" href="#" th:href="@{/admin/manage_companies}" class="card text-decoration-none m-3" style="width: 18rem">
-            <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-building fa-6x" style="color: #74C0FC;"></i></div>
+            <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-people-roof fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Zarządzaj Firmami</h5>
                 <p class="card-text">Panel do zarządzania firmami. Możesz tu dodawać nowe firmy oraz zmieć ich dane. </p>

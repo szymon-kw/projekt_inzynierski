@@ -95,6 +95,8 @@ public class UserAddingReportService {
                     attachment.setFilePath("/uploads/" + filePath.getFileName().toString());
                     attachment.setTimestamp(LocalDateTime.now());
                     attachment.setAddingUser(user.getEmail());
+                    attachment.setFileName(file.getOriginalFilename());
+                    attachment.setFileSize(file.getSize());
                     report.getAttachments().add(attachment);
 
                 }catch (IOException e) {

@@ -1,6 +1,6 @@
 package pl.projekt_inzynierski.report;
 
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -10,61 +10,51 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.projekt_inzynierski.Dto.FinalListViewDto;
-import pl.projekt_inzynierski.Dto.ListViewDto;
-import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
-import pl.projekt_inzynierski.user.UserRole;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
 public class ReportController {
 
-    private final UserRepository userRepository;
+
     private final ReportService reportService;
 
-    public ReportController(UserRepository userRepository, ReportService reportService) {
-        this.userRepository = userRepository;
+    @Autowired
+    public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
 
     @GetMapping("/reports")
-    String getAllReports(Authentication authentication, Model model) {
-        String currentUserName = authentication.getName();
-        User currentUser = userRepository.findByEmail(currentUserName).orElseThrow();
-        Set<String> currentUserRoles = currentUser.getRoles().stream()
-                .map(UserRole::getName)
-                .collect(Collectors.toSet());
-        if (currentUserRoles.contains("ADMINISTRATOR")) {
-            model.addAttribute("reports", reportService.getAllReports());
-            model.addAttribute("employees", userRepository.findAllUserByRolesName("EMPLOYEE")); //+++++ADMIN
-        } else if(currentUserRoles.contains("EMPLOYEE")) {
-            model.addAttribute("reports", reportService.getAllReportsByAssignedEmployeeEmail(currentUserName));
-        }
-        else {
-            model.addAttribute("reports", reportService.getAllReportsByReportingUserEmail(currentUserName));
-        }
+    String getAllReports() {
         return "report-listing";
     }
 
     @PostMapping("/reports/assign")
-    String assignEmployeeToReport(@RequestParam Long reportId, @RequestParam Long employeeId) {
-        reportService.assignEmployeeToReport(reportId, employeeId);
-        reportService.changeReportStatus(reportId, ReportStatus.UNDER_REVIEW);
-        return "redirect:/reports";
+    String assignEmployeeToReport(@RequestParam Long reportId, @RequestParam Long employeeId, Authentication authentication) {
+        if (havePermission(authentication, false)) {
+            reportService.assignEmployeeToReport(reportId, employeeId);
+            reportService.changeReportStatus(reportId, ReportStatus.UNDER_REVIEW);
+        }
+        return "redirect:/chat?reportId=" + reportId;
     }
 
-    @PostMapping("/reports/close")
-    public String closeReport(@RequestParam Long reportId) {
-        reportService.closeReport(reportId);
-        return "redirect:/reports";
+    @GetMapping("/reports/close")
+    public String closeReport(@RequestParam Long reportId, Authentication authentication) {
+
+        if (havePermission(authentication, true)){
+            reportService.closeReport(reportId);
+        }
+
+        return "redirect:/chat?reportId=" + reportId;
     }
 
-    @PostMapping("/reports/delete")
-    public String deleteReport(@RequestParam Long reportId) {
-        reportService.deleteReport(reportId);
+    @GetMapping("/reports/delete")
+    public String deleteReport(@RequestParam Long reportId, Authentication authentication) {
+        if (havePermission(authentication, false)) {
+            reportService.deleteReport(reportId);
+        }
         return "redirect:/reports";
     }
 
@@ -91,6 +81,16 @@ public class ReportController {
             return reportService.prepareListForUsers(UserName, Page, PageSize, ListCategory, Search, SortBy, SortOrder);
         }
 
+    }
+    private boolean havePermission(Authentication authentication, boolean forEmployeeTo) {
+
+        Set<String> userRole = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+
+        if(forEmployeeTo) {
+            return userRole.contains("ROLE_ADMINISTRATOR") || userRole.contains("ROLE_EMPLOYEE");
+        }else{
+            return userRole.contains("ROLE_ADMINISTRATOR");
+        }
     }
 
 

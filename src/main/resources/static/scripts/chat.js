@@ -1,6 +1,9 @@
 let client = null;
 let isConnected = false;
 
+var popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+var popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
 function showMessage(value, user) {
     let newResponse = document.createElement('p');
 
@@ -20,24 +23,43 @@ function showMessage(value, user) {
     scrollToBottom();
 }
 
-function showAttachment(url, user) {
-    let attachmentItem = document.createElement('p');
-    let now = new Date();
-    let formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
+function showAttachment(attachment) {
 
-    let link = document.createElement('a');
-    link.href = url;
-    link.target = "_blank";
-    let urlToDisplay = url.toString().replace(/\/uploads\//, '').replace(/\(\d+\)/g, '');
-    link.textContent = `Załączono plik: ${urlToDisplay}`;
-    link.classList.add("attachment-link");
+    let attachmentItem = document.createElement('div');
 
-    attachmentItem.textContent = `${user} (${formattedTime}) : `;
-    attachmentItem.classList.add("attachment-item");
-    attachmentItem.appendChild(link);
+    attachmentItem.className = 'card border m-3 hover-ring';
+
+    attachmentItem.setAttribute('style', 'max-width: 11em');
+    attachmentItem.setAttribute('data-bs-toggle', 'popover');
+    attachmentItem.setAttribute('data-bs-trigger', 'hover focus');
+    attachmentItem.setAttribute('data-bs-placement', 'bottom');
+    attachmentItem.setAttribute('data-bs-html', 'true');
+    attachmentItem.setAttribute('data-bs-title', attachment.fileName);
+    attachmentItem.setAttribute('data-bs-content', `<b>Przesłał:</b><br> ${attachment.addingUser} <br> <b>data:</b> <br> ${formatDate(attachment.timestamp)}`);
+
+
+    attachmentItem.innerHTML = `
+        <div class="card-body p-0">
+            <div class="w-100 text-center mt-4 mb-4 text-danger">
+                <i class="fa-solid fa-4x ${attachment.fileIconClass}"></i>
+            </div>
+            <div class="row p-0 m-0">
+                <div class="col col-8 p-0 m-0">
+                    <h6 class="mb-0 text-truncate">${attachment.fileName}</h6>
+                    <p><small class="mb-0">${attachment.fileSize}</small></p>
+                </div>
+                <div class="col col-1 mt-3">
+                    <a href="${attachment.filePath}" target="_blank" class="show-file"><i class="fa-solid fa-2xl fa-share-from-square"></i></a>
+                </div>
+        </div>
+    `;
 
     let attachmentsBox = document.getElementById('attachments-box');
     attachmentsBox.appendChild(attachmentItem);
+
+    popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
 }
 
 function sendAttachment() {
@@ -59,10 +81,10 @@ function sendAttachment() {
                         throw new Error("Błąd przesyłania załącznika.");
                     });
                 }
-                return response.text();
+                return response.json();
             })
-            .then(filePath => {
-                showAttachment(filePath, username);
+            .then(attachment => {
+                showAttachment(attachment);
                 fileInput.value = "";
             })
             .catch(error => console.error("Błąd przesyłania załącznika:", error));
@@ -119,6 +141,20 @@ function sendMessage() {
 function scrollToBottom() {
     const chatBox = document.getElementById('chat-box');
     chatBox.scrollTop = chatBox.scrollHeight;
+}
+function formatDate(timestamp) {
+
+    const date = new Date(timestamp);
+
+
+    const hours = String(date.getHours()).padStart(2, '0'); // HH
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // mm
+    const day = String(date.getDate()).padStart(2, '0'); // dd
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // MM
+    const year = date.getFullYear(); // yyyy
+
+
+    return `${hours}:${minutes} ${day}.${month}.${year}`;
 }
 
 document.getElementById('messageToSend').addEventListener('keydown', function(event) {

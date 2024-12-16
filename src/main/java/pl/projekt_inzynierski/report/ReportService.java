@@ -8,6 +8,7 @@ import pl.projekt_inzynierski.Dto.FinalListViewDto;
 import pl.projekt_inzynierski.Dto.ListViewDto;
 import pl.projekt_inzynierski.chat.ChatMessage;
 import pl.projekt_inzynierski.mailing.ChatNotificationQueue;
+import pl.projekt_inzynierski.mailing.MailService;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
 
@@ -30,14 +31,15 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final ChatNotificationQueue chatNotificationQueue;
+    private final MailService mailService;
 
 
 
-
-    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue) {
+    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService) {
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
         this.chatNotificationQueue = chatNotificationQueue;
+        this.mailService = mailService;
     }
 
 
@@ -106,6 +108,9 @@ public class ReportService {
 
         report.setAssignedUser(employee);
         reportRepository.save(report);
+
+        mailService.AssignNotificationMessage(employee.getEmail(), report.getTitle(), report.getReportingUser().getCompany().getName(),
+                report.getDateAdded().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),report.getReportingUser().getFirstName());
     }
     @Transactional
     public void saveNewReport(Report report) {

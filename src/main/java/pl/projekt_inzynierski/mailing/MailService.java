@@ -20,8 +20,6 @@ import pl.projekt_inzynierski.Dto.ToSendReminderDTO;
 import pl.projekt_inzynierski.report.*;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
-
-import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,19 +35,17 @@ public class MailService {
     private final UserRepository userRepository;
     private final ReportRepository reportRepository;
     private final ChatNotificationQueue chatNotificationQueue;
-    private final ReportService reportService;
 
     @Autowired
     public MailService(JavaMailSender mailSender, ISpringTemplateEngine templateEngine
             , EmailQueue emailQueue, UserRepository userRepository, ReportRepository reportRepository
-            , ChatNotificationQueue chatNotificationQueue, ReportService reportService) {
+            , ChatNotificationQueue chatNotificationQueue) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.emailQueue = emailQueue;
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
         this.chatNotificationQueue = chatNotificationQueue;
-        this.reportService = reportService;
     }
 
     @Value("$spring.mail.username")

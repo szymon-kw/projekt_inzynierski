@@ -16,11 +16,13 @@
         <div class="collapse navbar-collapse">
             <ul class="nav fs-5 nav-tabs w-100 ps-4 pe-4">
                 <li>
-                    <div class="navbar-brand fs-3 pe-2"><img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo" height="42" class="d-inline-block align-text-top">  IncidentHub</div>
+                    <div class="navbar-brand fs-3 pe-2">
+                        <img th:src="@{/images/Main_logo_small.png}" src="/static/images/Main_logo_small.png" alt="Logo" height="42" class="d-inline-block align-text-top"> IncidentHub
+                    </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/home}">Strona główna</a></li>
-                <li class="nav-item"><a class="nav-link active" href="#">Profil</a> </li>
-                <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Wyloguj się</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/home}">Strona główna</a></li>
+                <li class="nav-item"><a class="nav-link active" href="#">Profil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Wyloguj się</a></li>
                 <div class="align-self-center ms-auto">
                     <div class="container align-self-center">
                         <input type="checkbox" class="checkbox" id="checkbox">
@@ -38,52 +40,81 @@
 
 <div class="container d-flex flex-column align-items-center justify-content-center flex-column mt-4">
 
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+    <div class="add-user-section">
+        <div th:if="${successMessage}" class="alert alert-success w-100">
+            <p th:text="${successMessage}"></p>
+        </div>
+    </div>
 
     <div class="row justify-content-center">
-        <div class="card text-center shadow rounded-3" style="width: 36rem;">
+        <div class="card shadow rounded-3" style="width: 36rem;">
             <div class="card-body">
-                <form th:action="@{/profile}" method="post" class="text-start">
+
+                <div class="mb-3">
+                    <label for="firstName" class="form-label"><strong>Imię:</strong></label>
+                    <p id="firstName" class="form-control-plaintext" th:text="${user.firstName}">Jan</p>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label"><strong>Nazwisko:</strong></label>
+                    <p id="lastName" class="form-control-plaintext" th:text="${user.lastName}">Kowalski</p>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label"><strong>Typ konta:</strong></label>
+                    <p id="role" class="form-control-plaintext" th:text="${user.roles.iterator().next().name}">Administrator</p>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="currentEmail" class="form-label"><strong>Aktualny email:</strong></label>
+                    <p id="currentEmail" class="form-control-plaintext" th:text="${user.email}"></p>
+                </div>
+
+
+                <form th:action="@{/profile}" method="post" th:object="${emailUpdateDTO}" class="text-start">
+                    <input type="hidden" name="action" value="updateEmail" />
                     <div class="mb-3">
-                        <label for="firstName" class="form-label"><strong>Imię:</strong></label>
-                        <p id="firstName" class="form-control-plaintext" th:text="${user.firstName}">Jan</p>
+                        <label for="email" class="form-label"><strong>Nowy email:</strong></label>
+                        <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Wprowadź nowy email" required />
                     </div>
                     <div class="mb-3">
-                        <label for="lastName" class="form-label"><strong>Nazwisko:</strong></label>
-                        <p id="lastName" class="form-control-plaintext" th:text="${user.lastName}">Kowalski</p>
+                        <label for="currentPasswordForEmail" class="form-label"><strong>Obecne hasło (do zmiany emaila):</strong></label>
+                        <input type="password" id="currentPasswordForEmail" th:field="*{currentPassword}" class="form-control" placeholder="Wprowadź obecne hasło" required />
                     </div>
-                    <div class="mb-3">
-                        <label for="role" class="form-label"><strong>Typ konta:</strong></label>
-                        <p id="role" class="form-control-plaintext" th:text="${user.roles.iterator().next().name}">Administrator</p>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Zmień email</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label"><strong>Email:</strong></label>
-                        <input type="email" id="email" name="email" class="form-control" th:value="${user.email}" required />
-                    </div>
+                </form>
+
+                <hr />
+
+
+                <form th:action="@{/profile}" method="post" th:object="${passwordsDTO}" class="text-start">
+                    <input type="hidden" name="action" value="updatePassword" />
                     <div class="mb-3">
                         <label for="password" class="form-label"><strong>Nowe hasło:</strong></label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Wprowadź nowe hasło" required />
+                        <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Wprowadź nowe hasło" required />
                     </div>
-
                     <div class="mb-3">
-                        <label for="confirmPassword" class="form-label"><strong>Potwierdź hasło:</strong></label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Potwierdź hasło" required />
+                        <label for="confirmPassword" class="form-label"><strong>Potwierdź nowe hasło:</strong></label>
+                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Potwierdź hasło" required />
                     </div>
+                    <div class="mb-3">
+                        <label for="currentPasswordForPassword" class="form-label"><strong>Obecne hasło (do zmiany hasła):</strong></label>
 
-                    <div th:if="${error}" class="alert alert-danger mt-3">
-                        <span th:text="${error}"></span>
+                        <input type="password" id="currentPasswordForPassword" name="currentPassword" class="form-control" placeholder="Wprowadź obecne hasło" required />
                     </div>
-
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Zaktualizuj profil</button>
+                        <button type="submit" class="btn btn-primary">Zmień hasło</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div th:if="${param.success}" class="alert alert-success mt-4" role="alert">
-        Profil został pomyślnie zaktualizowany.
-    </div>
+
 </div>
 
 <footer class="pt-4 border-top border-secondary mt-auto">

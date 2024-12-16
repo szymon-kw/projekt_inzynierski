@@ -153,6 +153,25 @@ public class UserManagementService {
                 .orElseThrow(() -> new IllegalArgumentException("Użytkownik z tym adresem email nie może być znaleziony: " + email));
     }
 
+    public boolean isPasswordValid(User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    public void updateEmail(Long id, String email) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
+        user.setEmail(email);
+        userRepository.save(user);
+    }
+
+    public void updatePassword(Long id, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }

@@ -45,7 +45,7 @@
 
     <div class="row justify-content-center">
 
-        <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" href="#" th:href="@{/admin/manage_users}" class="card text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" href="#" th:href="@{/admin/manage_users}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-people-roof fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Zarządzaj Użytkownikami</h5>
@@ -53,7 +53,7 @@
             </div>
         </a>
 
-        <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" href="#" th:href="@{/admin/manage_companies}" class="card text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" href="#" th:href="@{/admin/manage_companies}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-people-roof fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Zarządzaj Firmami</h5>
@@ -61,7 +61,7 @@
             </div>
         </a>
 
-        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/reports}" class="card text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/reports}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-list-ul fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Panel zgłoszeń</h5>
@@ -69,7 +69,7 @@
                 <br>
             </div>
         </a>
-        <a sec:authorize="hasRole('ROLE_USER')" href="#" th:href="@{/new-report}" class="card text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="hasRole('ROLE_USER')" href="#" th:href="@{/new-report}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-regular fa-rectangle-xmark fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Nowe Zgłoszenie</h5>
@@ -78,7 +78,7 @@
             </div>
         </a>
 
-        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/summaries}" class="card text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/summaries}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-file-import fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Raporty</h5>
@@ -87,7 +87,7 @@
             </div>
         </a>
 
-        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/profile}" class="card text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/profile}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-id-card fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Profil</h5>

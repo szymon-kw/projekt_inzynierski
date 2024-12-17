@@ -37,6 +37,8 @@ public class Report {
     private User reportingUser;
     @ManyToOne
     private User assignedUser;
+    private Double addedToFirstReactionDuration;
+    private Double addedToCompleteDuration;
 
 
     public Long getId() {
@@ -166,6 +168,22 @@ public class Report {
 
     public void setTimeToRespond(LocalDateTime firstRespondTime) {
         this.timeToRespond = firstRespondTime;
+    }
+
+    public Double getAddedToFirstReactionDuration() {
+        return addedToFirstReactionDuration;
+    }
+
+    public void setAddedToFirstReactionDuration() {
+        this.addedToFirstReactionDuration = (double) Duration.between(dateAdded, LocalDateTime.now()).toMinutes() / 60.0;
+    }
+
+    public Double getAddedToCompleteDuration() {
+        return addedToCompleteDuration;
+    }
+
+    public void setAddedToCompleteDuration() {
+        this.addedToCompleteDuration = (double) Duration.between(dateAdded, LocalDateTime.now()).toMinutes() / 60.0;
     }
 }
 

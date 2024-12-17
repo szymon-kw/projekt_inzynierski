@@ -14,12 +14,17 @@ import pl.projekt_inzynierski.user.UserRepository;
 
 import java.awt.print.Pageable;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -417,4 +422,42 @@ public class ReportService {
 
         }
     }
+
+    public Map<LocalDate, Double> getAverageFirstReactionTimesForReports(List<Report> reports, LocalDate startDate, LocalDate endDate) {
+        return calculateAverageTimes(reports, startDate, endDate, Report::getAddedToFirstReactionDuration);
+    }
+
+    public Map<LocalDate, Double> getAverageCompletionTimesForReports(List<Report> reports, LocalDate startDate, LocalDate endDate) {
+        return calculateAverageTimes(reports, startDate, endDate, Report::getAddedToCompleteDuration);
+    }
+
+
+    private Map<LocalDate, Double> calculateAverageTimes(List<Report> reports, LocalDate startDate, LocalDate endDate, Function<Report, Double> timeExtractor) {
+        Map<LocalDate, List<Double>> groupedTimes = startDate.withDayOfMonth(1)
+                .datesUntil(endDate.withDayOfMonth(1).plusMonths(1), Period.ofMonths(1))
+                .collect(Collectors.toMap(
+                        date -> date,
+                        date -> new ArrayList<>()
+                ));
+
+        //pogrupowanie czasow wg miesiecy
+        reports.stream()
+                .filter(report -> !report.getDateAdded().toLocalDate().isBefore(startDate) &&
+                        !report.getDateAdded().toLocalDate().isAfter(endDate))
+                .forEach(report -> {
+                    LocalDate month = report.getDateAdded().toLocalDate().with(TemporalAdjusters.firstDayOfMonth());
+                    Double duration = timeExtractor.apply(report);
+                    if (duration != null) {
+                        groupedTimes.get(month).add(duration);
+                    }
+                });
+
+        //obliczenie srednich dla każdego miesiaca
+        return groupedTimes.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream().mapToDouble(Double::doubleValue).average().orElse(0.0)
+                ));
+    }
+
 }

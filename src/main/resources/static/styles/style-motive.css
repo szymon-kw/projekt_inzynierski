@@ -37,7 +37,7 @@
 #checkbox{
     display: none;
 }
-.module-panel:hover{
+.user-module:hover{
     background-color: rgba(187, 187, 187, 0.4);
 }
 

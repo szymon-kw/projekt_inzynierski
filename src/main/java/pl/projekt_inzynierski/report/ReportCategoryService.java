@@ -39,6 +39,8 @@ public class ReportCategoryService {
         return reportCategoryRepository.count();
     }
 
-
+    public Report_Category getReportCategoryById(Long id) {
+        return reportCategoryRepository.findById(id).orElseThrow();
+    }
 
 }

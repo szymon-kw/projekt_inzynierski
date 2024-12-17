@@ -165,24 +165,44 @@ public class ReportService {
 
     public String sortReports(List<Report> reports, String sort) {
         return switch (sort) {
-            case "addedDateDesc" -> {
-                reports.sort(Comparator.comparing(Report::getDateAdded).reversed());
-                yield "Data zgłoszenia (od najnowszych)";
+            case "remainingTimeAsc" -> {
+                reports.sort(Comparator.<Report, Boolean>comparing(
+                        report -> report.getRemainingTime(checkIsForFirstResponse(report)).isExpired() || report.getStatus().equals(ReportStatus.COMPLETED)
+                ).thenComparing(
+                        report -> report.getRemainingTime(checkIsForFirstResponse(report)),
+                        Comparator.comparing(RemainingTime::isExpired)
+                                .thenComparing(RemainingTime::getDays)
+                                .thenComparing(RemainingTime::getHours)
+                                .thenComparing(RemainingTime::getMinutes)
+                ));
+                yield "Pozostały czas do końca (rosnąco)";
+            }
+            case "remainingTimeDesc" -> {
+                reports.sort(Comparator.<Report, Boolean>comparing(
+                        report -> report.getRemainingTime(checkIsForFirstResponse(report)).isExpired() || report.getStatus().equals(ReportStatus.COMPLETED)
+                ).thenComparing(
+                        report -> report.getRemainingTime(checkIsForFirstResponse(report)),
+                        Comparator.comparing(RemainingTime::isExpired).reversed()
+                                .thenComparing(RemainingTime::getDays, Comparator.reverseOrder())
+                                .thenComparing(RemainingTime::getHours, Comparator.reverseOrder())
+                                .thenComparing(RemainingTime::getMinutes, Comparator.reverseOrder())
+                ));
+                yield "Pozostały czas do końca (malejąco)";
             }
             case "addedDateAsc" -> {
                 reports.sort(Comparator.comparing(Report::getDateAdded));
                 yield "Data zgłoszenia (od najstarszych)";
             }
-            case "remainingTimeAsc" -> {
-                reports.sort(Comparator.comparing(Report::getRemainingTimeDuration));
-                yield "Pozostały czas do końca (rosnąco)";
-            }
-            case "remainingTimeDesc" -> {
-                reports.sort(Comparator.comparing(Report::getRemainingTimeDuration).reversed());
-                yield "Pozostały czas do końca (malejąco)";
+            case "addedDateDesc" -> {
+                reports.sort(Comparator.comparing(Report::getDateAdded).reversed());
+                yield "Data zgłoszenia (od najnowszych)";
             }
             default -> "Brak";
         };
+    }
+
+    private boolean checkIsForFirstResponse(Report report) {
+        return report.getStatus() == ReportStatus.PENDING;
     }
 
     @Transactional
@@ -203,9 +223,6 @@ public class ReportService {
     public void deleteReport(Long reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
-
-
-
         reportRepository.delete(report);
     }
 

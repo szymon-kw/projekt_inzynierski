@@ -332,7 +332,7 @@ public class ReportService {
         result.setId(report.getId());
         result.setTitle(report.getTitle());
         result.setDescription(report.getDescription());
-        result.setCategory("Not Implement"); //nie zaimplementowano
+        result.setCategory(report.getCategory2().getName()); //nie zaimplementowano
         result.setStatus(report.getStatus().description);
         result.setDateAdded(report.getDateAdded().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
         if (report.getAssignedUser() != null) {

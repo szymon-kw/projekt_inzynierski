@@ -42,11 +42,14 @@
 
 <div class="container d-flex flex-column align-items-center justify-content-center flex-column mt-4">
 
-  <div class="alert alert-danger">
+  <div th:if="${param.exists}" class="alert alert-danger col-5">
     Taka kategoria już <strong>istnieje</strong> !
   </div>
-  <div class="alert alert-success">
+  <div th:if="${param.success}" class="alert alert-success col-5">
     Dodano nową kategorie
+  </div>
+  <div th:if="${param.delete}" class="alert alert-warning col-5">
+    <strong>Usunięto</strong> kategorie
   </div>
 
   <div class="row justify-content-center">
@@ -54,7 +57,7 @@
     <div class="card text-center shadow rounded-3 w-100">
       <div class="card-body">
         <h2 class="mb-3">Dodaj Kategorię</h2>
-        <form action="" method="post">
+        <form th:action="@{/ReportCategory/add}" action="" method="post">
           <div class="mb-3">
             <label class="form-label" for="name">Nazwa</label>
             <input class="form-control" id="name" name="name" type="text">
@@ -75,14 +78,14 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Nazwa</th>
-              <th scope="col"></th>
+              <th th:text="|Wszyskie: ${categoryCount}|" scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="category : ${categories}">
-              <td><strong>1</strong></td>
-              <td>Błedy kodu</td>
-              <td class="text-end"><a th:href="@{}" class="btn btn-danger">Usuń</a></td>
+            <tr th:each="category, status : ${categories}">
+              <td><strong th:text="${status.count}">1</strong></td>
+              <td th:text="${category.getName()}">Błedy kodu</td>
+              <td class="text-end"><a th:href="@{'ReportCategory/delete?id=' + ${category.getId()}}" class="btn btn-danger">Usuń</a></td>
             </tr>
             </tbody>
           </table>

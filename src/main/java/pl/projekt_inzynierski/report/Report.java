@@ -30,6 +30,8 @@ public class Report {
     private LocalDateTime timeToRespond;
     @Enumerated(EnumType.STRING)
     private ReportCategory category;
+    @ManyToOne
+    private Report_Category category2;
     @Enumerated(EnumType.STRING)
     private ReportStatus status;
     private String image;
@@ -84,9 +86,16 @@ public class Report {
     public ReportCategory getCategory() {
         return category;
     }
-
     public void setCategory(ReportCategory category) {
         this.category = category;
+    }
+
+    public Report_Category getCategory2() {
+        return category2;
+    }
+
+    public void setCategory2(Report_Category category2) {
+        this.category2 = category2;
     }
 
     public ReportStatus getStatus() {

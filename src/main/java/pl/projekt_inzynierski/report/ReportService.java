@@ -7,6 +7,7 @@ import pl.projekt_inzynierski.Dto.ChatQueueDto;
 import pl.projekt_inzynierski.Dto.FinalListViewDto;
 import pl.projekt_inzynierski.Dto.ListViewDto;
 import pl.projekt_inzynierski.chat.ChatMessage;
+import pl.projekt_inzynierski.chat.ChatMessageRepository;
 import pl.projekt_inzynierski.mailing.ChatNotificationQueue;
 import pl.projekt_inzynierski.mailing.MailService;
 import pl.projekt_inzynierski.user.User;
@@ -36,14 +37,16 @@ public class ReportService {
     private final UserRepository userRepository;
     private final ChatNotificationQueue chatNotificationQueue;
     private final MailService mailService;
+    private final ChatMessageRepository chatMessageRepository;
 
 
-
-    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService) {
+    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService,
+                         ChatMessageRepository chatMessageRepository) {
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
         this.chatNotificationQueue = chatNotificationQueue;
         this.mailService = mailService;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
 
@@ -222,6 +225,11 @@ public class ReportService {
     public void deleteReport(Long reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
+
+        List<ChatMessage> messages = chatMessageRepository.findAllByReportId(reportId);
+        chatMessageRepository.deleteAll(messages);
+
+
         reportRepository.delete(report);
     }
 
@@ -331,7 +339,12 @@ public class ReportService {
         result.setId(report.getId());
         result.setTitle(report.getTitle());
         result.setDescription(report.getDescription());
-        result.setCategory(report.getCategory2().getName()); //nie zaimplementowano
+        if (report.getCategory2() != null) {
+            result.setCategory(report.getCategory2().getName());
+        }else {
+            result.setCategory("brak");
+        }
+
         result.setStatus(report.getStatus().description);
         result.setDateAdded(report.getDateAdded().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
         if (report.getAssignedUser() != null) {

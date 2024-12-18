@@ -44,5 +44,8 @@ public class ReportCategoryService {
     }
 
 
+    public Report_Category getReportCategoryById(Long id) {
+        return reportCategoryRepository.findById(id).orElseThrow();
+    }
 
 }

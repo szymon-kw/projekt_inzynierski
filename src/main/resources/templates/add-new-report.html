@@ -64,10 +64,13 @@
 
                 <div class="mb-3">
                     <label for="">Kategoria</label>
-                    <select name="" id="" required class="form-select">
+                    <select th:field="*{categoryId}" name="categoryId" id="" required class="form-select">
                         <option value="" disabled selected>Wybierz kategorię</option>
-                        <option value="">Not Implement</option>
+                        <th:block th:each="category : ${categories}">
+                            <option th:value="${category.id}" th:text="${category.name}"></option>
+                        </th:block>
                     </select>
+                    <p th:errors="*{categoryId}" class="text-danger form-text">Kategoria musi zostać wybrana</p>
                 </div>
 
                 <div class="mb-3" >

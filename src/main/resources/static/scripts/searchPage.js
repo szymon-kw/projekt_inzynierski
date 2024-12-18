@@ -38,6 +38,7 @@ class QuweryParams {
         }
         this.IconId = null;
         this.SortOrder = null;
+        PageSizeButton.innerHTML = this.PageSize;
         makeApiCall();
     }
     SetSearchWord(SearchWard){
@@ -318,7 +319,11 @@ async function makeApiCall() {
 }
 
 function feachJson(data) {
-    const showTime = data.showTimetoClose;
+    var showTime = data.showTimetoClose;
+
+    if (showTime === true && quweryParam.ListCategory === 'Completed'){
+        showTime = false;
+    }
 
     //set dropdown info
     dropPendingCount.innerHTML = data.totalPending;

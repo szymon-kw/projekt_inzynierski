@@ -16,8 +16,9 @@ public class NewReportDTO {
     @NotNull(message = "Pole nie może być puste")
     @Size(min = 50, message = "Minimalna długość to 50 znaków")
     private String description;
+    @NotNull(message = "Kategoria musi być wybrana")
+    private Long categoryId;
     private List<MultipartFile> file;
-    // kategory {not implemented}
 
     public String getTitle() {
         return title;
@@ -37,6 +38,14 @@ public class NewReportDTO {
 
     public List<MultipartFile> getFile() {
         return file;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public void setFile(List<MultipartFile> file) {

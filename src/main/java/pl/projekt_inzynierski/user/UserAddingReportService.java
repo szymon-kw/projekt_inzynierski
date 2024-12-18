@@ -9,10 +9,7 @@ import pl.projekt_inzynierski.Dto.NewReportDTO;
 import pl.projekt_inzynierski.attachment.Attachment;
 import pl.projekt_inzynierski.file.FileService;
 import pl.projekt_inzynierski.mailing.MailService;
-import pl.projekt_inzynierski.report.Report;
-import pl.projekt_inzynierski.report.ReportCategory;
-import pl.projekt_inzynierski.report.ReportService;
-import pl.projekt_inzynierski.report.ReportStatus;
+import pl.projekt_inzynierski.report.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,33 +29,25 @@ public class UserAddingReportService {
     private final ReportService reportService;
     private final UserRepository userRepository;
     private final MailService mailService;
+    private final ReportCategoryService reportCategoryService;
 
 
     @Autowired
     public UserAddingReportService(FileService fileService, ReportService reportService
-            , UserRepository userRepository, MailService mailService) {
+            , UserRepository userRepository, MailService mailService, ReportCategoryService reportCategoryService) {
         this.fileService = fileService;
         this.reportService = reportService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.reportCategoryService = reportCategoryService;
     }
 
-    public boolean validReport(NewReportDTO newReportDTO) {
-
-        if (newReportDTO == null) {
-            return false;
-        }
-
-        if (newReportDTO.getDescription().isEmpty() || newReportDTO.getDescription().length() < 50) {
-            return false;
-        } else if (newReportDTO.getTitle().isEmpty() || newReportDTO.getTitle().length() < 10) {
-            return false;
-        }else {return true;}
-
-    }
     public void addNewReport(NewReportDTO newReportDTO) {
 
         Report report = new Report();
+
+        Report_Category category = reportCategoryService.getReportCategoryById(newReportDTO.getCategoryId());
+
         report.setTitle(newReportDTO.getTitle());
         report.setDescription(newReportDTO.getDescription());
 
@@ -70,7 +59,7 @@ public class UserAddingReportService {
         report.setDateAdded(LocalDateTime.now());
         report.setDueDate(LocalDateTime.now().plusDays(user.getCompany().getTimeToResolve()));
         report.setTimeToRespond(LocalDateTime.now().plusHours(user.getCompany().getTimeToFirsRespond()));
-        // category implements
+        report.setCategory2(category);
         report.setStatus(ReportStatus.PENDING);
         report.setReportingUser(user);
 

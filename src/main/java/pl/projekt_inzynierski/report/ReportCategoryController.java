@@ -22,7 +22,7 @@ public class ReportCategoryController {
     @RequestMapping("")
     public String menageReportCategory(Model model) {
 
-        Iterable<Report_Category> categories = reportCategoryService.getAllReportCategories();
+        Iterable<ReportCategory> categories = reportCategoryService.getAllReportCategories();
         model.addAttribute("categories", categories);
         model.addAttribute("categoryCount", reportCategoryService.getCountOfReportCategories());
 
@@ -35,7 +35,7 @@ public class ReportCategoryController {
         if (reportCategoryService.isExists(name)) {
             return "redirect:/ReportCategory?exists";
         }
-        Report_Category reportCategory = new Report_Category();
+        ReportCategory reportCategory = new ReportCategory();
         reportCategory.setName(name);
         reportCategoryService.addNewReportCategory(reportCategory);
 

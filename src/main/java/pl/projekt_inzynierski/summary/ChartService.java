@@ -58,7 +58,7 @@ public class ChartService {
                 .forEach(report -> {
                     LocalDate month = report.getDateAdded().toLocalDate().with(TemporalAdjusters.firstDayOfMonth());
                     Map<Object, Long> existingCounts = groupedData.get(month);
-                    Object key = byCategory ? report.getCategory2() : report.getStatus();
+                    Object key = byCategory ? report.getCategory() : report.getStatus();
                     existingCounts.put(key, existingCounts.getOrDefault(key, 0L) + 1);
                 });
 
@@ -68,7 +68,7 @@ public class ChartService {
             values.forEach(value -> {
                 long count = dataCounts.getOrDefault(value, 0L);
                 String seriesName = byCategory
-                        ? ((Report_Category) value).getName()
+                        ? ((ReportCategory) value).getName()
                         : ((ReportStatus) value).description;
                 dataset.addValue(count, seriesName, monthName);
             });

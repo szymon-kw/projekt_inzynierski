@@ -46,7 +46,7 @@ public class UserAddingReportService {
 
         Report report = new Report();
 
-        Report_Category category = reportCategoryService.getReportCategoryById(newReportDTO.getCategoryId());
+        ReportCategory category = reportCategoryService.getReportCategoryById(newReportDTO.getCategoryId());
 
         report.setTitle(newReportDTO.getTitle());
         report.setDescription(newReportDTO.getDescription());
@@ -59,11 +59,9 @@ public class UserAddingReportService {
         report.setDateAdded(LocalDateTime.now());
         report.setDueDate(LocalDateTime.now().plusDays(user.getCompany().getTimeToResolve()));
         report.setTimeToRespond(LocalDateTime.now().plusHours(user.getCompany().getTimeToFirsRespond()));
-        report.setCategory2(category);
+        report.setCategory(category);
         report.setStatus(ReportStatus.PENDING);
         report.setReportingUser(user);
-
-        report.setCategory(ReportCategory.MINOR);
 
         //obsługa plików
         if (!newReportDTO.getFile().isEmpty()) {

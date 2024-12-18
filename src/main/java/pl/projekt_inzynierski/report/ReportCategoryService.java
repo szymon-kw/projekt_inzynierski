@@ -17,13 +17,13 @@ public class ReportCategoryService {
     }
 
     @Transactional
-    public void addNewReportCategory(Report_Category reportCategory) {
+    public void addNewReportCategory(ReportCategory reportCategory) {
         reportCategoryRepository.save(reportCategory);
     }
 
     @Transactional
     public void deleteReportCategory(Long id) {
-        Report_Category category = reportCategoryRepository.findById(id).orElseThrow();
+        ReportCategory category = reportCategoryRepository.findById(id).orElseThrow();
         reportCategoryRepository.delete(category);
     }
 
@@ -31,7 +31,7 @@ public class ReportCategoryService {
         return reportCategoryRepository.existsByName(categoryName);
     }
 
-    public Iterable<Report_Category> getAllReportCategories() {
+    public Iterable<ReportCategory> getAllReportCategories() {
         return reportCategoryRepository.findAll();
     }
 
@@ -39,12 +39,12 @@ public class ReportCategoryService {
         return reportCategoryRepository.count();
     }
 
-    public Optional<Report_Category> findByName(String categoryName) {
+    public Optional<ReportCategory> findByName(String categoryName) {
         return reportCategoryRepository.findByName(categoryName);
     }
 
 
-    public Report_Category getReportCategoryById(Long id) {
+    public ReportCategory getReportCategoryById(Long id) {
         return reportCategoryRepository.findById(id).orElseThrow();
     }
 

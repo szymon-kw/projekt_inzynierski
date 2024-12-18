@@ -51,7 +51,7 @@ public class SummaryController {
     @GetMapping("/summaries")
     public String getSummariesPanel(Model model) {
         List<String> categories = StreamSupport.stream(reportCategoryService.getAllReportCategories().spliterator(), false)
-                .map(Report_Category::getName).toList();
+                .map(ReportCategory::getName).toList();
         model.addAttribute("categories", categories);
         model.addAttribute("statusList", ReportStatus.values());
         if (currentUserIsAdmin()) {
@@ -78,7 +78,7 @@ public class SummaryController {
                 @RequestParam(required = false) boolean showReportsTable, @RequestParam(required = false) boolean showCharts,
                 HttpServletResponse response) {
 
-            Report_Category category = reportCategoryService.findByName(categoryName).orElse(null);
+            ReportCategory category = reportCategoryService.findByName(categoryName).orElse(null);
             LocalDate[] localDates = checkAnyDateIsNull(dateFrom, dateTo);
             dateFrom = localDates[0];
             dateTo = localDates[1];

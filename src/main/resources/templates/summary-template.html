@@ -98,7 +98,7 @@
         <tr th:each="report, iterStat : ${reports}">
             <td th:text="${iterStat.index + 1}"></td>
             <td th:text="${report.title}"></td>
-            <td th:text="${report.category2.name}"></td>
+            <td th:text="${report.category.name}"></td>
             <td th:text="${report.status.description}"></td>
             <td th:text="${formattedDates.get(report.id)}"></td>
             <td th:text="${remainingTime[iterStat.index]}"></td>

@@ -15,9 +15,10 @@
         </createTable>
         <addForeignKeyConstraint
                 baseTableName="report"
-                baseColumnNames="category2_id"
+                baseColumnNames="category_id"
                 constraintName="fk_category"
                 referencedTableName="report_category"
-                referencedColumnNames="id"/>
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
     </changeSet>
 </databaseChangeLog>

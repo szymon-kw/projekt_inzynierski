@@ -7,10 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pl.projekt_inzynierski.Dto.NewReportDTO;
 import pl.projekt_inzynierski.report.ReportCategoryService;
-import pl.projekt_inzynierski.report.Report_Category;
 
 @Controller
 @RequestMapping("/new-report")

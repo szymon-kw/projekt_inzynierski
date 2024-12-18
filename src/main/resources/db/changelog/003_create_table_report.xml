@@ -25,10 +25,7 @@
             <column name="time_to_respond" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="category" type="VARCHAR(50)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="category2_id" type="BIGINT"/>
+            <column name="category_id" type="BIGINT"/>
             <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>

@@ -349,7 +349,7 @@ function feachJson(data) {
         newElement.innerHTML = `
             <div class="col col-md-1 text-center" style="width: 3%;"><Strong>${index + 1}</Strong></div>
             <div class="col col-md-2 col-sm-1" style="width: 14%;">${item.title}</div>
-            <div class="col col-md-3 col-sm-1" style="width: 19%;">${item.description}</div>
+            <div class="col col-md-3 text-break col-sm-1" style="width: 19%;">${item.description}</div>
             <div class="col col-1 text-center" style="width: 8%;">${item.category}</div>
             <div class="col col-1 text-center text-center" style="width: 6%;"><span class="badge ${setColor(item.status)}">${item.status}</span></div>
             <div class="col col-2 text-break text-center" style="width: 9%;">${item.dateAdded}</div>

@@ -112,8 +112,8 @@ public class ReportService {
         if (!employee.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE"))) {
             throw new IllegalArgumentException("User is not an employee");
         }
-
         report.setAssignedUser(employee);
+        report.setAddedToFirstReactionDuration();
         reportRepository.save(report);
 
         mailService.AssignNotificationMessage(employee.getEmail(), report.getTitle(), report.getReportingUser().getCompany().getName(),
@@ -218,6 +218,7 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
         report.setStatus(ReportStatus.COMPLETED);
+        report.setAddedToCompleteDuration();
         reportRepository.save(report);
     }
 
@@ -228,8 +229,6 @@ public class ReportService {
 
         List<ChatMessage> messages = chatMessageRepository.findAllByReportId(reportId);
         chatMessageRepository.deleteAll(messages);
-
-
         reportRepository.delete(report);
     }
 

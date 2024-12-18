@@ -4,16 +4,19 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ReportCategoryService {
 
     private final ReportCategoryRepository reportCategoryRepository;
+    private final ReportService reportService;
 
     @Autowired
-    public ReportCategoryService(ReportCategoryRepository reportCategoryRepository) {
+    public ReportCategoryService(ReportCategoryRepository reportCategoryRepository, ReportService reportService) {
         this.reportCategoryRepository = reportCategoryRepository;
+        this.reportService = reportService;
     }
 
     @Transactional
@@ -24,6 +27,11 @@ public class ReportCategoryService {
     @Transactional
     public void deleteReportCategory(Long id) {
         ReportCategory category = reportCategoryRepository.findById(id).orElseThrow();
+        List<Report> reports = reportService.getReportsByCategory(category);
+        for (Report report : reports) {
+            report.setCategory(null);
+            reportService.saveNewReport(report);
+        }
         reportCategoryRepository.delete(category);
     }
 

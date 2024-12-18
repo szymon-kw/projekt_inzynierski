@@ -43,7 +43,7 @@ public class ReportCategoryController {
 
     }
     @GetMapping("/delete")
-    public String delaeteCategory(@RequestParam Long id) {
+    public String deleteCategory(@RequestParam Long id) {
         reportCategoryService.deleteReportCategory(id);
         return "redirect:/ReportCategory?delete";
     }

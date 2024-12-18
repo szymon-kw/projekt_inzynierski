@@ -23,7 +23,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findAllByAssignedUserAndStatusNot(User user, ReportStatus status);
     List<Report> findAllByAssignedUserIsNullAndStatusNot(ReportStatus status);
     List<Report> findAllByStatus(ReportStatus status);
-
     //zliczanie dla Admina
     long countAllByStatus(ReportStatus status);
     long countAllByAssignedUserIsNullAndStatusNot(ReportStatus status);

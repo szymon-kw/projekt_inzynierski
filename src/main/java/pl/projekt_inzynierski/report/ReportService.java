@@ -12,7 +12,6 @@ import pl.projekt_inzynierski.mailing.MailService;
 import pl.projekt_inzynierski.user.User;
 import pl.projekt_inzynierski.user.UserRepository;
 
-import java.awt.print.Pageable;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -128,7 +127,7 @@ public class ReportService {
     }
 
 
-    public List<Report> getReportsByCategory(ReportCategory reportCategory) {
+    public List<Report> getReportsByCategory(Report_Category reportCategory) {
         return reportRepository.findAllByCategory(reportCategory);
     }
 
@@ -136,8 +135,8 @@ public class ReportService {
         return reportRepository.findAllByDateAddedIsBetween(dateFrom, dateTo);
     }
 
-    public List<Report> filterReportsByCategory(ReportCategory category) {
-        return filterReports(report -> report.getCategory() == category);
+    public List<Report> filterReportsByCategory(Report_Category category) {
+        return filterReports(report -> report.getCategory2() == category);
     }
 
     public List<Report> filterReportsByStatus(ReportStatus status) {
@@ -150,7 +149,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    public List<Report> getReportsByCategoryAndStatus(ReportCategory category, ReportStatus status) {
+    public List<Report> getReportsByCategoryAndStatus(Report_Category category, ReportStatus status) {
         List<Report> reportsByCategory = filterReportsByCategory(category);
         List<Report> reportsByStatus = filterReportsByStatus(status);
         reportsByCategory.retainAll(reportsByStatus);

@@ -39,6 +39,10 @@ public class ReportCategoryService {
         return reportCategoryRepository.count();
     }
 
+    public Optional<Report_Category> findByName(String categoryName) {
+        return reportCategoryRepository.findByName(categoryName);
+    }
+
 
 
 }

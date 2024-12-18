@@ -2,7 +2,6 @@ package pl.projekt_inzynierski.report;
 
 import jakarta.persistence.*;
 import pl.projekt_inzynierski.chat.ChatMessage;
-import pl.projekt_inzynierski.report.RemainingTime;
 import pl.projekt_inzynierski.attachment.Attachment;
 import pl.projekt_inzynierski.user.User;
 
@@ -41,7 +40,6 @@ public class Report {
     private User assignedUser;
     private Double addedToFirstReactionDuration;
     private Double addedToCompleteDuration;
-
 
     public Long getId() {
         return id;
@@ -195,4 +193,3 @@ public class Report {
         this.addedToCompleteDuration = (double) Duration.between(dateAdded, LocalDateTime.now()).toMinutes() / 60.0;
     }
 }
-

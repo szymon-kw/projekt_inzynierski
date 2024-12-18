@@ -26,17 +26,24 @@
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
 
-                if (dateFrom && dateTo) {
-                    const dateFromObj = new Date(dateFrom);
+                if (dateTo) {
                     const dateToObj = new Date(dateTo);
-
-                    if (dateFromObj > dateToObj) {
-                        alert("Data 'Od' nie może być późniejsza niż data 'Do'");
+                    dateToObj.setHours(0, 0, 0, 0);
+                    if (dateToObj > today) {
+                        alert("Data 'Do' nie może być datą z przyszłości");
                         event.preventDefault();
                         return false;
                     }
-                    if (dateToObj > today) {
-                        alert("Data 'Do' nie może być datą z przyszłości");
+                }
+
+                if (dateFrom && dateTo) {
+                    const dateFromObj = new Date(dateFrom);
+                    dateFromObj.setHours(0, 0, 0, 0);
+                    const dateToObj = new Date(dateTo);
+                    dateToObj.setHours(0, 0, 0, 0);
+
+                    if (dateFromObj > dateToObj) {
+                        alert("Data 'Od' nie może być późniejsza niż data 'Do'");
                         event.preventDefault();
                         return false;
                     }
@@ -44,6 +51,8 @@
                 return true;
             }
         </script>
+
+
 
     </head>
     <body data-bs-theme="light" id="pageBody" class="d-flex flex-column min-vh-100">
@@ -90,10 +99,10 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="category" class="form-label">Kategoria:</label>
-                        <select id="category" name="category" class="form-select">
+                        <label for="categoryName" class="form-label">Kategoria:</label>
+                        <select id="categoryName" name="categoryName" class="form-select">
                             <option value="">Wszystkie</option>
-                            <option th:each="category : ${categories}" th:value="${category}" th:text="${category.description}"></option>
+                            <option th:each="category: ${categories}" th:value="${category}" th:text="${category}"></option>
                         </select>
                     </div>
                     <div class="mb-3">

@@ -63,16 +63,22 @@
             text-align: center;
             margin-top: 150px;
         }
+
+        .label {
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
 <h2 th:text="${summaryHeader}">Raport dotyczący zgłoszeń</h2>
-<p>Data wygenerowania: <span th:text="${currentDate}"></span></p>
-<p>Wygenerowano przez: <span th:text="${currentUserName}"></span></p>
-<p>Przedział dat uwzględniony w raporcie: <span th:text="${dateRange}"></span></p>
-<p>Kategoria zgłoszeń uwzględniona w raporcie: <span th:text="${categories}"></span></p>
-<p>Status zgłoszeń uwzględniony w raporcie: <span th:text="${status}"></span></p>
-<p>Posortowano według: <span th:text="${sort}"></span></p>
+<p><span class="label">Data wygenerowania:</span> <span th:text="${currentDate}"></span></p>
+<p><span class="label">Wygenerowano przez:</span> <span th:text="${currentUserName}"></span></p>
+<p><span class="label">Przedział dat uwzględniony w raporcie:</span> <span th:text="${dateRange}"></span></p>
+<p><span class="label">Kategoria zgłoszeń uwzględniona w raporcie:</span> <span th:text="${categories}"></span></p>
+<p><span class="label">Status zgłoszeń uwzględniony w raporcie:</span> <span th:text="${status}"></span></p>
+<p><span class="label">Posortowano według:</span> <span th:text="${sort}"></span></p>
+
 
 <div th:unless="${reports.isEmpty()}">
     <table th:if="${showReportsTable}">
@@ -92,7 +98,7 @@
         <tr th:each="report, iterStat : ${reports}">
             <td th:text="${iterStat.index + 1}"></td>
             <td th:text="${report.title}"></td>
-            <td th:text="${report.category.description}"></td>
+            <td th:text="${report.category2.name}"></td>
             <td th:text="${report.status.description}"></td>
             <td th:text="${formattedDates.get(report.id)}"></td>
             <td th:text="${remainingTime[iterStat.index]}"></td>

@@ -86,7 +86,7 @@
             </div>
         </a>
 
-        <a sec:authorize="isAuthenticated()" href="#" th:href="@{/summaries}" class="card user-module text-decoration-none m-3" style="width: 18rem">
+        <a sec:authorize="hasAnyRole('ROLE_EMPLOYEE', 'ROLE_ADMINISTRATOR')" href="#" th:href="@{/summaries}" class="card user-module text-decoration-none m-3" style="width: 18rem">
             <div class="card-img-top p-3 d-flex justify-content-center"><i class="fa-solid fa-file-import fa-6x" style="color: #74C0FC;"></i></div>
             <div class="card-body">
                 <h5 class="card_title">Raporty</h5>

@@ -15,7 +15,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findByAssignedUser(User user);
     List<Report> findByReportingUser(User user);
     List<Report> findAllByStatusNot(ReportStatus status);
-    List<Report> findAllByCategory(ReportCategory category);
+    List<Report> findAllByCategory(Report_Category category);
     List<Report> findAllByDateAddedIsBetween(LocalDateTime dateAdded, LocalDateTime dateAdded2);
     List<Report> findAllByReportingUserAndStatus(User user, ReportStatus status);
     List<Report> findAllByReportingUserAndStatusNot(User user, ReportStatus status);

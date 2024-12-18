@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -291,7 +292,7 @@ public class MailService {
         if (!adminsEmail.isEmpty()){ReportIsClosedMessage(String.join(", ", adminsEmail), reportTitle, false);}
     }
 
-    //@Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 8 * * *")
     public void noCloseReportReminder(){
 
         List<Report> AllReports = reportRepository.findAllByStatusNot(ReportStatus.COMPLETED);
@@ -339,7 +340,7 @@ public class MailService {
     }
 
 
-    //@Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
+    @Scheduled (fixedRate = 1, timeUnit = TimeUnit.HOURS) //every hour
     public void shortTimeToCloseReportsReminder(){
 
         List<ToSendReminderDTO> ToSendFrames = prepareSendingFrameForEndingReports();
@@ -351,7 +352,7 @@ public class MailService {
     }
 
 
-    @Scheduled (fixedRate = 10000) //co 10 sec
+    @Scheduled (fixedRate = 5000) //co 10 sec
     @Async
     public void proccessEmailQueue() {
         while (!emailQueue.isEmpty()) {

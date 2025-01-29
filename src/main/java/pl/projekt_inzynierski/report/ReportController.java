@@ -68,7 +68,7 @@ public class ReportController {
 
     @GetMapping("/api/reports")
     @ResponseBody
-    FinalListViewDto grtReportsInfo(Authentication authentication,
+    FinalListViewDto getReportsInfo(Authentication authentication,
                                     @RequestParam int Page,
                                     @RequestParam int PageSize,
                                     @RequestParam String ListCategory,

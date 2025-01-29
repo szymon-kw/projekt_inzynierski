@@ -39,16 +39,15 @@ public class ReportService {
     private final UserRepository userRepository;
     private final ChatNotificationQueue chatNotificationQueue;
     private final MailService mailService;
-    private final ChatMessageService chatMessageService;
+
 
     @Autowired
-    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService,
-                         ChatMessageService chatMessageService) {
+    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService) {
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
         this.chatNotificationQueue = chatNotificationQueue;
         this.mailService = mailService;
-        this.chatMessageService = chatMessageService;
+
     }
 
 

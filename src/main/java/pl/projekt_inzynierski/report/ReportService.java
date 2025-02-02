@@ -1,5 +1,6 @@
 package pl.projekt_inzynierski.report;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import pl.projekt_inzynierski.Dto.FinalListViewDto;
 import pl.projekt_inzynierski.Dto.ListViewDto;
 import pl.projekt_inzynierski.chat.ChatMessage;
 import pl.projekt_inzynierski.chat.ChatMessageRepository;
+import pl.projekt_inzynierski.chat.ChatMessageService;
 import pl.projekt_inzynierski.mailing.ChatNotificationQueue;
 import pl.projekt_inzynierski.mailing.MailService;
 import pl.projekt_inzynierski.user.User;
@@ -37,16 +39,15 @@ public class ReportService {
     private final UserRepository userRepository;
     private final ChatNotificationQueue chatNotificationQueue;
     private final MailService mailService;
-    private final ChatMessageRepository chatMessageRepository;
 
 
-    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService,
-                         ChatMessageRepository chatMessageRepository) {
+    @Autowired
+    public ReportService(UserRepository userRepository, ReportRepository reportRepository, ChatNotificationQueue chatNotificationQueue, MailService mailService) {
         this.userRepository = userRepository;
         this.reportRepository = reportRepository;
         this.chatNotificationQueue = chatNotificationQueue;
         this.mailService = mailService;
-        this.chatMessageRepository = chatMessageRepository;
+
     }
 
 
@@ -218,6 +219,7 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
         report.setStatus(ReportStatus.COMPLETED);
+        mailService.PrepareReportClosedMessage(report);
         report.setAddedToCompleteDuration();
         reportRepository.save(report);
     }
@@ -227,11 +229,8 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
 
-        List<ChatMessage> messages = chatMessageRepository.findAllByReportId(reportId);
-        chatMessageRepository.deleteAll(messages);
         reportRepository.delete(report);
     }
-
 
     public FinalListViewDto prepareListForAdmins(int Page, int PageSize, String ListCategory, String Search, String SortBy, String SortOrder) {
 

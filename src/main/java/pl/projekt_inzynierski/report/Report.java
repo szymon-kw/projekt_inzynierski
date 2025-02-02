@@ -31,7 +31,6 @@ public class Report {
     private ReportCategory category;
     @Enumerated(EnumType.STRING)
     private ReportStatus status;
-    private String image;
     @ManyToOne
     private User reportingUser;
     @ManyToOne
@@ -93,14 +92,6 @@ public class Report {
 
     public void setStatus(ReportStatus status) {
         this.status = status;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public User getReportingUser() {

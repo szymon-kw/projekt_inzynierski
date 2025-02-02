@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.projekt_inzynierski.Dto.FinalListViewDto;
+import pl.projekt_inzynierski.chat.ChatMessage;
+import pl.projekt_inzynierski.chat.ChatMessageService;
 import pl.projekt_inzynierski.user.UserRepository;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,10 +23,12 @@ public class ReportController {
 
 
     private final ReportService reportService;
+    private final ChatMessageService chatMessageService;
 
     @Autowired
-    public ReportController(ReportService reportService) {
+    public ReportController(ReportService reportService, ChatMessageService chatMessageService) {
         this.reportService = reportService;
+        this.chatMessageService = chatMessageService;
     }
 
     @GetMapping("/reports")
@@ -53,14 +58,17 @@ public class ReportController {
     @GetMapping("/reports/delete")
     public String deleteReport(@RequestParam Long reportId, Authentication authentication) {
         if (havePermission(authentication, false)) {
+            List<ChatMessage> messages = chatMessageService.findAllByReportId(reportId);
+            chatMessageService.deleteAllMessages(messages);
             reportService.deleteReport(reportId);
+
         }
         return "redirect:/reports";
     }
 
     @GetMapping("/api/reports")
     @ResponseBody
-    FinalListViewDto grtReportsInfo(Authentication authentication,
+    FinalListViewDto getReportsInfo(Authentication authentication,
                                     @RequestParam int Page,
                                     @RequestParam int PageSize,
                                     @RequestParam String ListCategory,

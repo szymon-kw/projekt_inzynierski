@@ -1,13 +1,13 @@
 INSERT INTO report_category(name) VALUES
-    ( 'Inne'),
-    ( 'Problemy z logowaniem i rejestracją'),
-    ( 'Problemy z wydajnością i ładowaniem'),
-    ( 'Problemy z interfejsem użytkownika'),
-    ( 'Problemy z funkcjonalnością'),
-    ( 'Problemy z danymi'),
-    ( 'Problemy z notyfikacjami i e-mailami'),
-    ('Problemy z integracjami i API'),
-    ('Problemy z plikami i załącznikami');
+                                      ( 'Inne'),
+                                      ( 'Problemy z logowaniem i rejestracją'),
+                                      ( 'Problemy z wydajnością i ładowaniem'),
+                                      ( 'Problemy z interfejsem użytkownika'),
+                                      ( 'Problemy z funkcjonalnością'),
+                                      ( 'Problemy z danymi'),
+                                      ( 'Problemy z notyfikacjami i e-mailami'),
+                                      ('Problemy z integracjami i API'),
+                                      ('Problemy z plikami i załącznikami');
 
 INSERT INTO report (title, description, date_added, due_date, time_to_respond, category_id, status, reporting_user_id, assigned_user_id) VALUES
 ('Błąd logowania użytkownika', 'Użytkownicy zgłaszają problemy z logowaniem.', '2025-01-10 08:00:00', '2025-01-15 23:59:59', '2025-01-11 08:00:00', 2, 'COMPLETED', 1, 2),
